@@ -32,7 +32,9 @@ def test_declarative_nested_model_constructor_by_dict(session):
         assert new_root.id == 1
         assert new_root.name == 'root'
         assert len(new_root.branches) == 1
+        assert new_root.branches[0].id == 1
         assert new_root.branches[0].name =='branch'
+        assert new_root.branches[0].root_id == new_root.id
         assert len(new_root.branches[0].nodes) == 1
         assert new_root.branches[0].nodes[0].name == 'node'
         assert len(new_root.branches[0].nodes[0].leaves) == 2
@@ -58,7 +60,9 @@ def test_declarative_nested_model_constructor_by_model(session):
         assert new_root.id == 2
         assert new_root.name == 'root'
         assert len(new_root.branches) == 1
+        assert new_root.branches[0].id == 2
         assert new_root.branches[0].name =='branch'
+        assert new_root.branches[0].root_id == new_root.id
         assert len(new_root.branches[0].nodes) == 1
         assert new_root.branches[0].nodes[0].name == 'node'
         assert len(new_root.branches[0].nodes[0].leaves) == 2
