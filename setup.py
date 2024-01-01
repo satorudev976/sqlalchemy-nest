@@ -6,6 +6,7 @@ setup(
     description='easy create nested models for sqlalchemy',
     url='https://github.com/satorudev976/sqlalchemy-nest.git',
     packages=find_packages(),
+    install_requires=["sqlalchemy>=0.7"],
     author='satoru',
     license='MIT',
     python_requires='>=3.9'
