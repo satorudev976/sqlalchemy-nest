@@ -21,7 +21,7 @@ class Root(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(100))
     
-    branches = relationship("Branch", back_populates="root", uselist=True, lazy="joined", order_by="Branch.id")
+    branches = relationship("Branch", back_populates="root", uselist=True, lazy="joined")
     
 
 class Branch(Base):
