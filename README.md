@@ -34,7 +34,8 @@ class Branch(Base):
     root = relationship("Root")
 ```
 
-initialization from kwargs
+initialization from kwargs.
+
 sets attributes on the constructed instance using the names and values in kwargs.
 
 ```
