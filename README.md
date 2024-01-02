@@ -7,13 +7,11 @@ sqlalchemy-nest is easy create nested models for sqlalchemy
 use ```declarative_nested_model_constructor``` for declarative_base constructor
 
 ```python
-
 from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.orm import declarative_base, relationship
 from sqlalchemy_nest import declarative_nested_model_constructor
 
 Base = declarative_base(constructor=declarative_nested_model_constructor)
-
 
 class Root(Base):
     __tablename__ = "root"
@@ -23,7 +21,6 @@ class Root(Base):
     
     branches = relationship("Branch", back_populates="root", uselist=True, lazy="joined")
     
-
 class Branch(Base):
     __tablename__ = "branch"
     
@@ -39,7 +36,6 @@ initialization from kwargs.
 sets attributes on the constructed instance using the names and values in kwargs.
 
 ```
-
 root = {
     'name': 'root',
     'branches': [
