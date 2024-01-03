@@ -70,7 +70,7 @@ def test_declarative_nested_model_constructor_by_model(session):
         assert new_root.branches[0].nodes[0].leaves[0].name == 'leaf_1'
         assert new_root.branches[0].nodes[0].leaves[1].name == 'leaf_2'
 
-def test_declarative_nested_model_constructor_one_to_one_by_dict(session):
+def test_declarative_nested_model_constructor_one_to_one_by_model(session):
     reservation = {
         'start_date': date(2024, 1, 1),
         'end_date': date(2024, 1, 2),
@@ -106,12 +106,12 @@ def test_declarative_nested_model_constructor_composite_by_dict(session):
     with session() as session:
         session.add(Reservation(**reservation))
         session.commit()
-        new_reservation: Reservation = session.query(Reservation).filter(Reservation.id == 1).first()
+        new_reservation: Reservation = session.query(Reservation).filter(Reservation.id == 2).first()
         
-        assert new_reservation.id == 1
+        assert new_reservation.id == 2
         assert new_reservation.start_date == date(2024, 1, 1)
         assert new_reservation.end_date == date(2024, 1, 2)
         assert new_reservation.date_range == DateRange(start=date(2024, 1, 1), end=date(2024, 1, 2))
-        assert new_reservation.registration_card.id == 1
+        assert new_reservation.registration_card.id == 2
         assert new_reservation.registration_card.reservation_id == new_reservation.id
         assert new_reservation.registration_card.guest_name == 'Jon'
