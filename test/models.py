@@ -1,5 +1,5 @@
-from sqlalchemy import Column, ForeignKey, Integer, String
-from sqlalchemy.orm import declarative_base, relationship
+from sqlalchemy import Column, Date, ForeignKey, Integer, String
+from sqlalchemy.orm import composite, declarative_base, relationship
 from sqlalchemy_nest import declarative_nested_model_constructor
 
 Base = declarative_base(constructor=declarative_nested_model_constructor)
@@ -44,3 +44,43 @@ class Leaf(Base):
     node_id = Column(Integer, ForeignKey("node.id"))
     
     node = relationship("Node")
+
+
+class DateRange:
+    def __init__(self, start, end):
+        self.start = start
+        self.end = end
+
+    def __composite_values__(self):
+        return self.start, self.end
+
+    def __repr__(self):
+        return f"DateRange(start={self.start!r}), end={self.end!r}"
+
+    def __eq__(self, other):
+        return isinstance(other, DateRange) and other.start == self.start and other.end == self.end
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
+class Reservation(Base):
+    __tablename__ = "reservation"
+    
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    
+    start_date = Column(Date)
+    end_date = Column(Date)
+    
+    registration_card = relationship("RegistrationCard", back_populates="reservation", uselist=False, lazy="joined", cascade="all, delete-orphan")    
+    
+    
+    date_range = composite(DateRange, start_date, end_date)
+
+class RegistrationCard(Base):
+    __tablename__ = "registration_card"
+    
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    guest_name = Column(String(100))
+    reservation_id = Column(Integer, ForeignKey("reservation.id"), unique=True)
+    
+    reservation = relationship("Reservation")
