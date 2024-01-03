@@ -37,6 +37,9 @@ def declarative_nested_model_constructor(self: Any, **kwargs: Any) -> None:
             else:
                 setattr(self, k, kwargs[k])
         elif k in composites:
-            composite_cls = composites[k].composite_class
-            instance = composite_cls(**kwargs[k])
-            setattr(self, k, instance)    
+            if isinstance(kwargs[k], dict):
+                composite_cls = composites[k].composite_class
+                instance = composite_cls(**kwargs[k])
+                setattr(self, k, instance)
+            else:
+                setattr(self, k, kwargs[k])
