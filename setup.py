@@ -18,5 +18,8 @@ setup(
     long_description_content_type='text/markdown',
     author='satoru',
     license='MIT',
-    python_requires='>=3.9'
+    python_requires='>=3.9',
+    extras_require={
+        "test": ["pytest", "pytest-cov"]
+    }
 )
