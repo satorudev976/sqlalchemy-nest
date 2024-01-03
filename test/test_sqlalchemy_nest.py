@@ -1,5 +1,5 @@
 from datetime import date
-from test.models import Branch, DateRange, Leaf, Node, Reservation, Root
+from test.models import Branch, DateRange, Leaf, Node, RegistrationCard, Reservation, Root
     
 
 def test_one_to_many_by_dict(session):
@@ -91,6 +91,29 @@ def test_one_to_one_by_model(session):
         assert new_reservation.registration_card.reservation_id == new_reservation.id
         assert new_reservation.registration_card.guest_name == 'Jon'
 
+def test_one_to_one_by_model(session):
+    reservation = Reservation(
+        id=2,
+        start_date=date(2024, 1, 1),
+        end_date=date(2024, 1, 2),
+        registration_card=RegistrationCard(
+            id=2,
+            guest_name='Jon'
+        )
+    )
+    
+    with session() as session:
+        session.add(reservation)
+        session.commit()
+        new_reservation: Reservation = session.query(Reservation).filter(Reservation.id == 2).first()
+        
+        assert new_reservation.id == 2
+        assert new_reservation.start_date == date(2024, 1, 1)
+        assert new_reservation.end_date == date(2024, 1, 2)
+        assert new_reservation.registration_card.id == 2
+        assert new_reservation.registration_card.reservation_id == new_reservation.id
+        assert new_reservation.registration_card.guest_name == 'Jon'
+
 
 def test_composite_by_dict(session):
     reservation = {
@@ -106,12 +129,12 @@ def test_composite_by_dict(session):
     with session() as session:
         session.add(Reservation(**reservation))
         session.commit()
-        new_reservation: Reservation = session.query(Reservation).filter(Reservation.id == 2).first()
+        new_reservation: Reservation = session.query(Reservation).filter(Reservation.id == 3).first()
         
-        assert new_reservation.id == 2
+        assert new_reservation.id == 3
         assert new_reservation.start_date == date(2024, 1, 1)
         assert new_reservation.end_date == date(2024, 1, 2)
         assert new_reservation.date_range == DateRange(start=date(2024, 1, 1), end=date(2024, 1, 2))
-        assert new_reservation.registration_card.id == 2
+        assert new_reservation.registration_card.id == 3
         assert new_reservation.registration_card.reservation_id == new_reservation.id
         assert new_reservation.registration_card.guest_name == 'Jon'
