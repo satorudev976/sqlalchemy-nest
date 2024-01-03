@@ -1,5 +1,7 @@
 # sqlalchemy-nest
 
+[![CI](https://github.com/satorudev976/sqlalchemy-nest/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/satorudev976/sqlalchemy-nest/actions/workflows/ci.yml)
+
 sqlalchemy-nest is easy create nested models for sqlalchemy
 
 ### Getting started
