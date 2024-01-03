@@ -161,3 +161,25 @@ def test_composite_by_model(session):
         assert new_reservation.registration_card.id == 4
         assert new_reservation.registration_card.reservation_id == new_reservation.id
         assert new_reservation.registration_card.guest_name == 'Jon'
+
+def test_not_hasattr_by_dict(session):
+    reservation = {
+        'is_vip': True,
+        'start_date': date(2024, 1, 1),
+        'end_date': date(2024, 1, 2),
+        'registration_card': {
+            'guest_name': 'Jon'
+        }
+    }
+    
+    with session() as session:
+        session.add(Reservation(**reservation))
+        session.commit()
+        new_reservation: Reservation = session.query(Reservation).filter(Reservation.id == 5).first()
+        
+        assert new_reservation.id == 5
+        assert new_reservation.start_date == date(2024, 1, 1)
+        assert new_reservation.end_date == date(2024, 1, 2)
+        assert new_reservation.registration_card.id == 5
+        assert new_reservation.registration_card.reservation_id == new_reservation.id
+        assert new_reservation.registration_card.guest_name == 'Jon'
