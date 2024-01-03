@@ -1,5 +1,5 @@
 from datetime import date
-from test.models import Branch, Leaf, Node, Reservation, Root
+from test.models import Branch, DateRange, Leaf, Node, Reservation, Root
     
 
 def test_declarative_nested_model_constructor_by_dict(session):
@@ -87,6 +87,31 @@ def test_declarative_nested_model_constructor_one_to_one_by_dict(session):
         assert new_reservation.id == 1
         assert new_reservation.start_date == date(2024, 1, 1)
         assert new_reservation.end_date == date(2024, 1, 2)
+        assert new_reservation.registration_card.id == 1
+        assert new_reservation.registration_card.reservation_id == new_reservation.id
+        assert new_reservation.registration_card.guest_name == 'Jon'
+
+
+def test_declarative_nested_model_constructor_composite_by_dict(session):
+    reservation = {
+        'date_range': {
+            'start': date(2024, 1, 1),
+            'end': date(2024, 1, 2),
+        },
+        'registration_card': {
+            'guest_name': 'Jon'
+        }
+    }
+    
+    with session() as session:
+        session.add(Reservation(**reservation))
+        session.commit()
+        new_reservation: Reservation = session.query(Reservation).filter(Reservation.id == 1).first()
+        
+        assert new_reservation.id == 1
+        assert new_reservation.start_date == date(2024, 1, 1)
+        assert new_reservation.end_date == date(2024, 1, 2)
+        assert new_reservation.date_range == DateRange(start=date(2024, 1, 1), end=date(2024, 1, 2))
         assert new_reservation.registration_card.id == 1
         assert new_reservation.registration_card.reservation_id == new_reservation.id
         assert new_reservation.registration_card.guest_name == 'Jon'

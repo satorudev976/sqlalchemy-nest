@@ -72,9 +72,8 @@ class Reservation(Base):
     end_date = Column(Date)
     
     registration_card = relationship("RegistrationCard", back_populates="reservation", uselist=False, lazy="joined", cascade="all, delete-orphan")    
-    
-    
     date_range = composite(DateRange, start_date, end_date)
+
 
 class RegistrationCard(Base):
     __tablename__ = "registration_card"
