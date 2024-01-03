@@ -12,34 +12,30 @@ def declarative_nested_model_constructor(self: Any, **kwargs: Any) -> None:
     """
     cls_ = type(self)
     
-    mapped_columns = class_mapper(cls_).columns
     relationships = class_mapper(cls_).relationships
     composites = class_mapper(cls_).composites
     
     for k in kwargs:
         if not hasattr(cls_, k):
             continue
-        if k in mapped_columns:
-            setattr(self, k, kwargs[k])
-            continue
-        elif k in relationships: 
+        
+        if isinstance(kwargs[k], list): # "one-to-many"
             relation_cls = relationships[k].mapper.entity
-            if isinstance(kwargs[k], list): # "one-to-many"
-                for elem in kwargs[k]:
-                    if isinstance(elem, dict):
-                        instances = [relation_cls(**elem) for elem in kwargs[k]]
-                        setattr(self, k, instances)
-                    else:
-                        setattr(self, k, kwargs[k])
-            elif isinstance(kwargs[k], dict): # "one-to-one"
+            for elem in kwargs[k]:
+                if isinstance(elem, dict):
+                    instances = [relation_cls(**elem) for elem in kwargs[k]]
+                    setattr(self, k, instances)
+                else:
+                    setattr(self, k, kwargs[k])
+        
+        elif isinstance(kwargs[k], dict): # "one-to-one"
+            if k in relationships:
+                relation_cls = relationships[k].mapper.entity
                 instance = relation_cls(**kwargs[k])
                 setattr(self, k, instance)
-            else:
-                setattr(self, k, kwargs[k])
-        elif k in composites:
-            if isinstance(kwargs[k], dict):
+            if k in composites:
                 composite_cls = composites[k].composite_class
                 instance = composite_cls(**kwargs[k])
-                setattr(self, k, instance)
-            else:
-                setattr(self, k, kwargs[k])
+                setattr(self, k, instance)    
+        else:
+            setattr(self, k, kwargs[k])
