@@ -2,7 +2,7 @@ from datetime import date
 from test.models import Branch, DateRange, Leaf, Node, Reservation, Root
     
 
-def test_declarative_nested_model_constructor_by_dict(session):
+def test_one_to_many_by_dict(session):
     root = {
         'name': 'root',
         'branches': [
@@ -44,7 +44,7 @@ def test_declarative_nested_model_constructor_by_dict(session):
         
         
         
-def test_declarative_nested_model_constructor_by_model(session):
+def test_one_to_many_by_model(session):
     root = Root(id=2, name='root', branches=[
         Branch(id=2, name='branch', nodes=[
             Node(id=2, name='node', leaves=[
@@ -70,7 +70,7 @@ def test_declarative_nested_model_constructor_by_model(session):
         assert new_root.branches[0].nodes[0].leaves[0].name == 'leaf_1'
         assert new_root.branches[0].nodes[0].leaves[1].name == 'leaf_2'
 
-def test_declarative_nested_model_constructor_one_to_one_by_model(session):
+def test_one_to_one_by_model(session):
     reservation = {
         'start_date': date(2024, 1, 1),
         'end_date': date(2024, 1, 2),
@@ -92,7 +92,7 @@ def test_declarative_nested_model_constructor_one_to_one_by_model(session):
         assert new_reservation.registration_card.guest_name == 'Jon'
 
 
-def test_declarative_nested_model_constructor_composite_by_dict(session):
+def test_composite_by_dict(session):
     reservation = {
         'date_range': {
             'start': date(2024, 1, 1),
