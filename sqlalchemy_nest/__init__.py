@@ -1,6 +1,7 @@
 from typing import Any
 from sqlalchemy.orm import class_mapper
 
+
 def declarative_nested_model_constructor(self: Any, **kwargs: Any) -> None:
     """A nested model support constructor that allows initialization from kwargs.
 
@@ -19,7 +20,7 @@ def declarative_nested_model_constructor(self: Any, **kwargs: Any) -> None:
         if not hasattr(cls_, k):
             continue
         
-        if isinstance(kwargs[k], list): # "one-to-many"
+        if isinstance(kwargs[k], list):  # "one-to-many"
             relation_cls = relationships[k].mapper.entity
             for elem in kwargs[k]:
                 if isinstance(elem, dict):
@@ -28,7 +29,7 @@ def declarative_nested_model_constructor(self: Any, **kwargs: Any) -> None:
                 else:
                     setattr(self, k, kwargs[k])
         
-        elif isinstance(kwargs[k], dict): # "one-to-one"
+        elif isinstance(kwargs[k], dict):  # "one-to-one"
             if k in relationships:
                 relation_cls = relationships[k].mapper.entity
                 instance = relation_cls(**kwargs[k])
@@ -36,6 +37,6 @@ def declarative_nested_model_constructor(self: Any, **kwargs: Any) -> None:
             if k in composites:
                 composite_cls = composites[k].composite_class
                 instance = composite_cls(**kwargs[k])
-                setattr(self, k, instance)    
+                setattr(self, k, instance)
         else:
             setattr(self, k, kwargs[k])
