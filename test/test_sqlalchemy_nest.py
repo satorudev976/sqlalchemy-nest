@@ -57,11 +57,11 @@ class TestOneToMany:
         
                 
     def test_one_to_many_by_model(self, session):
-        root = Root(id=1, name='root', branches=[
-            Branch(id=1, name='branch', nodes=[
-                Node(id=1, name='node', leaves=[
-                    Leaf(id=1, name='leaf_1'),
-                    Leaf(id=2, name='leaf_2'),
+        root = Root(name='root', branches=[
+            Branch(name='branch', nodes=[
+                Node(name='node', leaves=[
+                    Leaf(name='leaf_1'),
+                    Leaf(name='leaf_2'),
                 ])
             ])
         ])
@@ -117,11 +117,9 @@ class TestOneToOne:
 
     def test_one_to_one_by_model(self, session):
         reservation = Reservation(
-            id=1,
             start_date=date(2024, 1, 1),
             end_date=date(2024, 1, 2),
             registration_card=RegistrationCard(
-                id=1,
                 guest_name='Jon'
             )
         )
@@ -176,10 +174,8 @@ class TestCompositeType:
 
     def test_composite_by_model(self, session):
         reservation = Reservation(
-            id=1,
             date_range=DateRange(start=date(2024, 1, 1), end=date(2024, 1, 2)),
             registration_card=RegistrationCard(
-                id=1,
                 guest_name='Jon'
             )
         )
