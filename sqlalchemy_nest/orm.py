@@ -1,6 +1,7 @@
 from typing import Any
 from sqlalchemy.orm import class_mapper
 
+
 class BaseModel(object):
     
     def update(self: Any, **kwargs: Any) -> None:
@@ -16,7 +17,7 @@ class BaseModel(object):
                 setattr(self, column.key, kwargs.get(column.key))
         
         for composite in composites:
-            if kwargs.get(composite.key): 
+            if kwargs.get(composite.key):
                 setattr(self, composite.key, composite.composite_class(**kwargs[composite.key]))
         
         for relationship in relationships:
@@ -45,9 +46,9 @@ class BaseModel(object):
                     if relationship_cls:
                         relationship_cls.update(**kwargs.get(relationship.key))
                     else:
-                      setattr(self, relationship.key, relationship.mapper.entity(**kwargs[relationship.key]))  
+                        setattr(self, relationship.key, relationship.mapper.entity(**kwargs[relationship.key]))
             else:
                 if getattr(self, relationship.key) and isinstance(getattr(self, relationship.key), list):
                     setattr(self, relationship.key, [])
-                else:    
+                else:
                     setattr(self, relationship.key, kwargs.get(relationship.key))
