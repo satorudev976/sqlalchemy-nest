@@ -19,7 +19,7 @@ class BaseModel(object):
             if kwargs.get(relationship.key):
                 if isinstance(kwargs.get(relationship.key), list):
                     relationship_clses = getattr(self, relationship.key)
-                    pks = class_mapper(relationship.mapper.entity).primary_key
+                    pks = relationship.entity.primary_key
                     should_remove_entities = relationship_clses.copy()
                     
                     for elem in kwargs.get(relationship.key):
