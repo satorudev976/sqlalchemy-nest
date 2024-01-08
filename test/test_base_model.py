@@ -175,6 +175,22 @@ class TestOneToOne:
             assert updated_reservation.end_date == date(2024, 2, 2)
             assert updated_reservation.registration_card == None
 
+    def test_remove_by_composite(self, session):
+        update_reservation = {
+            'id': 1,
+            'date_range': None
+        }
+        with session() as session:
+            reservation: Reservation = session.query(Reservation).filter(Reservation.id == 1).first()
+            reservation.update(**update_reservation)
+            session.commit()
+            updated_reservation: Reservation = session.query(Reservation).filter(Reservation.id == 1).first()
+            
+            assert updated_reservation.id == 1
+            assert updated_reservation.start_date == None
+            assert updated_reservation.end_date == None
+            assert updated_reservation.registration_card == None
+
 class TestOneToMany:
 
     @pytest.fixture(autouse=True, scope="function")
