@@ -17,25 +17,24 @@ class BaseModel(object):
             if relationship.viewonly:
                 continue
             if kwargs.get(relationship.key):
+                relationship_cls = getattr(self, relationship.key)
                 if isinstance(kwargs.get(relationship.key), list):
-                    relationship_clses = getattr(self, relationship.key)
                     pks = relationship.entity.primary_key
-                    should_remove_entities = relationship_clses.copy()
+                    should_remove_entities = relationship_cls.copy()
                     
                     for elem in kwargs.get(relationship.key):
                         if all(elem.get(pk.name) is not None for pk in pks):
-                            for relationship_cls in relationship_clses:
-                                if all(getattr(relationship_cls, pk.name) == elem.get(pk.name) for pk in pks):
-                                    relationship_cls.update(**elem)
-                                    should_remove_entities.remove(relationship_cls)
+                            for entity in relationship_cls:
+                                if all(getattr(entity, pk.name) == elem.get(pk.name) for pk in pks):
+                                    entity.update(**elem)
+                                    should_remove_entities.remove(entity)
                         else:
-                            relationship_clses.append(relationship.mapper.entity(**elem))
+                            relationship_cls.append(relationship.mapper.entity(**elem))
                     
                     for should_remove_entity in should_remove_entities:
-                        relationship_clses.remove(should_remove_entity)
+                        relationship_cls.remove(should_remove_entity)
                             
                 if isinstance(kwargs.get(relationship.key), dict):
-                    relationship_cls = getattr(self, relationship.key)
                     if relationship_cls:
                         relationship_cls.update(**kwargs.get(relationship.key))
                     else:
