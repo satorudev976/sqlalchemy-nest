@@ -1,8 +1,9 @@
 from sqlalchemy import Column, Date, ForeignKey, Integer, String
 from sqlalchemy.orm import composite, declarative_base, relationship
 from sqlalchemy_nest import declarative_nested_model_constructor
+from sqlalchemy_nest.orm import BaseModel
 
-Base = declarative_base(constructor=declarative_nested_model_constructor)
+Base = declarative_base(cls=BaseModel, constructor=declarative_nested_model_constructor)
 
 
 class Root(Base):
@@ -21,7 +22,7 @@ class Branch(Base):
     name = Column(String(100))
     root_id = Column(Integer, ForeignKey("root.id"))
     
-    root = relationship("Root")
+    root = relationship("Root", viewonly=True)
     nodes = relationship("Node", back_populates="branch", uselist=True, lazy="joined", cascade="all, delete-orphan", order_by="Node.id")
 
 
@@ -32,7 +33,7 @@ class Node(Base):
     name = Column(String(100))
     branch_id = Column(Integer, ForeignKey("branch.id"))
     
-    branch = relationship("Branch")
+    branch = relationship("Branch", viewonly=True)
     leaves = relationship("Leaf", back_populates="node", uselist=True, lazy="joined", cascade="all, delete-orphan", order_by="Leaf.id")
 
 
@@ -43,7 +44,7 @@ class Leaf(Base):
     name = Column(String(100))
     node_id = Column(Integer, ForeignKey("node.id"))
     
-    node = relationship("Node")
+    node = relationship("Node", viewonly=True)
 
 
 class DateRange:
@@ -82,4 +83,4 @@ class RegistrationCard(Base):
     guest_name = Column(String(100))
     reservation_id = Column(Integer, ForeignKey("reservation.id"), unique=True)
     
-    reservation = relationship("Reservation")
+    reservation = relationship("Reservation", viewonly=True)
