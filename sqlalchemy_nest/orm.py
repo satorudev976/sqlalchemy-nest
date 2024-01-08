@@ -4,7 +4,7 @@ from sqlalchemy.orm import class_mapper
 
 class BaseModel(object):
     
-    def update(self: Any, **kwargs: Any) -> None:
+    def update(self, **kwargs: Any) -> None:
         for column in class_mapper(type(self)).columns:
             if not column.foreign_keys and not column.primary_key:
                 setattr(self, column.key, kwargs.get(column.key))
@@ -41,7 +41,10 @@ class BaseModel(object):
                     else:
                         setattr(self, relationship.key, relationship.mapper.entity(**kwargs[relationship.key]))
             else:
-                if getattr(self, relationship.key) and isinstance(getattr(self, relationship.key), list):
-                    setattr(self, relationship.key, [])
-                else:
-                    setattr(self, relationship.key, kwargs.get(relationship.key))
+                self.remove_relationship(relationship)
+    
+    def remove_relationship(self, relationship):
+        if isinstance(getattr(self, relationship.key), list):
+            setattr(self, relationship.key, [])
+        else:
+            setattr(self, relationship.key, None)
