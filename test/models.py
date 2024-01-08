@@ -22,7 +22,7 @@ class Branch(Base):
     name = Column(String(100))
     root_id = Column(Integer, ForeignKey("root.id"))
     
-    root = relationship("Root", viewonly=True, single_parent=True)
+    root = relationship("Root", viewonly=True)
     nodes = relationship("Node", back_populates="branch", uselist=True, lazy="joined", cascade="all, delete-orphan", order_by="Node.id")
 
 
@@ -33,7 +33,7 @@ class Node(Base):
     name = Column(String(100))
     branch_id = Column(Integer, ForeignKey("branch.id"))
     
-    branch = relationship("Branch", viewonly=True, single_parent=True)
+    branch = relationship("Branch", viewonly=True)
     leaves = relationship("Leaf", back_populates="node", uselist=True, lazy="joined", cascade="all, delete-orphan", order_by="Leaf.id")
 
 
@@ -44,7 +44,7 @@ class Leaf(Base):
     name = Column(String(100))
     node_id = Column(Integer, ForeignKey("node.id"))
     
-    node = relationship("Node", viewonly=True, single_parent=True)
+    node = relationship("Node", viewonly=True)
 
 
 class DateRange:
@@ -83,4 +83,4 @@ class RegistrationCard(Base):
     guest_name = Column(String(100))
     reservation_id = Column(Integer, ForeignKey("reservation.id"), unique=True)
     
-    reservation = relationship("Reservation", viewonly=True, single_parent=True)
+    reservation = relationship("Reservation", viewonly=True)
