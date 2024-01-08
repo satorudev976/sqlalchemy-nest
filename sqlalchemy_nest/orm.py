@@ -5,22 +5,15 @@ from sqlalchemy.orm import class_mapper
 class BaseModel(object):
     
     def update(self: Any, **kwargs: Any) -> None:
-        cls_ = type(self)
-        columns = class_mapper(cls_).columns
-        relationships = class_mapper(cls_).relationships
-        composites = class_mapper(cls_).composites
-        
-        for column in columns:
-            if column.foreign_keys or column.primary_key:
-                continue
-            else:
+        for column in class_mapper(type(self)).columns:
+            if not column.foreign_keys and not column.primary_key:
                 setattr(self, column.key, kwargs.get(column.key))
         
-        for composite in composites:
+        for composite in class_mapper(type(self)).composites:
             if kwargs.get(composite.key):
                 setattr(self, composite.key, composite.composite_class(**kwargs[composite.key]))
         
-        for relationship in relationships:
+        for relationship in class_mapper(type(self)).relationships:
             if relationship.viewonly:
                 continue
             if kwargs.get(relationship.key):
