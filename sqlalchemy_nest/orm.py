@@ -26,13 +26,19 @@ class BaseModel(object):
                 if isinstance(kwargs.get(relationship.key), list):
                     relationship_clses = getattr(self, relationship.key)
                     pks = class_mapper(relationship.mapper.entity).primary_key
+                    should_remove_entities = relationship_clses.copy()
+                    
                     for elem in kwargs.get(relationship.key):
                         if all(elem.get(pk.name) is not None for pk in pks):
                             for relationship_cls in relationship_clses:
                                 if all(getattr(relationship_cls, pk.name) == elem.get(pk.name) for pk in pks):
                                     relationship_cls.update(**elem)
+                                    should_remove_entities.remove(relationship_cls)
                         else:
                             relationship_clses.append(relationship.mapper.entity(**elem))
+                    
+                    for should_remove_entity in should_remove_entities:
+                        relationship_clses.remove(should_remove_entity)
                             
                 if isinstance(kwargs.get(relationship.key), dict):
                     relationship_cls = getattr(self, relationship.key)
@@ -40,8 +46,8 @@ class BaseModel(object):
                         relationship_cls.update(**kwargs.get(relationship.key))
                     else:
                       setattr(self, relationship.key, relationship.mapper.entity(**kwargs[relationship.key]))  
-                else:
-                    ...
             else:
-                setattr(self, relationship.key, kwargs.get(relationship.key))
-                
+                if getattr(self, relationship.key) and isinstance(getattr(self, relationship.key), list):
+                    setattr(self, relationship.key, [])
+                else:    
+                    setattr(self, relationship.key, kwargs.get(relationship.key))

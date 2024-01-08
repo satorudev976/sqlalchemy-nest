@@ -375,6 +375,75 @@ class TestOneToMany:
             assert updated_root.branches[0].nodes[0].leaves[1].name == 'leaf_2'
             assert updated_root.branches[1].nodes[0].leaves[0].name == 'added_leaf_1'
 
+    def test_remove_only_children(self, session):
+        updat_root = {
+            'id': 1,
+            'name': 'root',
+            'branches': [
+                {
+                    'id': 1,
+                    'name': 'branch',
+                    'nodes': [
+                        {
+                            'id': 1,
+                            'name': 'node',
+                            'leaves': [
+                                {
+                                    'id': 1,
+                                    'name': 'leaf_1'
+                                },
+                            ]
+                        }
+                    ]
+                },
+            ] 
+        }
+        
+        with session() as session:
+            root: Root = session.query(Root).filter(Root.id == 1).first()
+            root.update(**updat_root)
+            session.commit()
+            updated_root: Root = session.query(Root).filter(Root.id == 1).first()
+            
+            
+            assert updated_root.id == 1
+            assert updated_root.name == 'root'
+            assert len(updated_root.branches) == 1
+            assert updated_root.branches[0].id == 1
+            assert updated_root.branches[0].name =='branch'
+            assert updated_root.branches[0].root_id == updated_root.id
+            assert len(updated_root.branches[0].nodes) == 1
+            assert updated_root.branches[0].nodes[0].name == 'node'
+            assert len(updated_root.branches[0].nodes[0].leaves) == 1
+            assert updated_root.branches[0].nodes[0].leaves[0].name == 'leaf_1'
+
+    def test_remove_parent_and_children(self, session):
+        updat_root = {
+            'id': 1,
+            'name': 'root',
+            'branches': [
+                {
+                    'id': 1,
+                    'name': 'branch',
+                },
+            ] 
+        }
+        
+        with session() as session:
+            root: Root = session.query(Root).filter(Root.id == 1).first()
+            root.update(**updat_root)
+            session.commit()
+            updated_root: Root = session.query(Root).filter(Root.id == 1).first()
+            
+            
+            assert updated_root.id == 1
+            assert updated_root.name == 'root'
+            assert len(updated_root.branches) == 1
+            assert updated_root.branches[0].id == 1
+            assert updated_root.branches[0].name =='branch'
+            assert updated_root.branches[0].root_id == updated_root.id
+            assert len(updated_root.branches[0].nodes) == 0
+            assert updated_root.branches[0].nodes == []
 
 class TestCreateOneToMany:
 
