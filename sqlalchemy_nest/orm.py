@@ -16,33 +16,40 @@ class BaseModel(object):
         for relationship in class_mapper(type(self)).relationships:
             if relationship.viewonly:
                 continue
-            if kwargs.get(relationship.key):
-                relationship_cls = getattr(self, relationship.key)
-                if isinstance(relationship_cls, list):  # one to many
-                    pks = relationship.entity.primary_key
-                    should_remove_entities = relationship_cls.copy()   
-                    for elem in kwargs.get(relationship.key):
-                        if all(elem.get(pk.name) is None for pk in pks):
-                            relationship_cls.append(relationship.mapper.entity(**elem))
-                            continue
-                        
-                        for entity in relationship_cls:
-                            if all(getattr(entity, pk.name) == elem.get(pk.name) for pk in pks):
-                                entity.update(**elem)
-                                should_remove_entities.remove(entity)
-
-                    for should_remove_entity in should_remove_entities:
-                        relationship_cls.remove(should_remove_entity)
-                else:  # one to one
-                    if relationship_cls:
-                        relationship_cls.update(**kwargs.get(relationship.key))
-                    else:    
-                        setattr(self, relationship.key, relationship.mapper.entity(**kwargs.get(relationship.key)))
+            
+            if isinstance(kwargs.get(relationship.key), list) or isinstance(getattr(self, relationship.key), list):
+                self._merge_one_to_many_relationship(relationship, **kwargs)
             else:
-                self.remove_relationship(relationship)            
-    
-    def remove_relationship(self, relationship):
-        if isinstance(getattr(self, relationship.key), list):
-            setattr(self, relationship.key, [])
+                self._merge_one_to_one_relationship(relationship, **kwargs)
+
+    def _merge_one_to_one_relationship(self, relationship, **kwargs: Any):
+        if kwargs.get(relationship.key):
+            relationship_cls = getattr(self, relationship.key)
+            if relationship_cls:
+                relationship_cls.update(**kwargs.get(relationship.key))
+            else:
+                setattr(self, relationship.key, relationship.mapper.entity(**kwargs.get(relationship.key)))
         else:
             setattr(self, relationship.key, None)
+
+    def _merge_one_to_many_relationship(self, relationship, **kwargs: Any):
+        if kwargs.get(relationship.key):
+            relationship_cls = getattr(self, relationship.key)
+            pks = relationship.entity.primary_key
+            should_remove_entities = relationship_cls.copy()
+            for elem in kwargs.get(relationship.key):
+                if all(elem.get(pk.name) is None for pk in pks):
+                    relationship_cls.append(relationship.mapper.entity(**elem))
+                    continue
+                
+                for entity in relationship_cls:
+                    if all(getattr(entity, pk.name) == elem.get(pk.name) for pk in pks):
+                        entity.update(**elem)
+                        should_remove_entities.remove(entity)
+
+            for should_remove_entity in should_remove_entities:
+                relationship_cls.remove(should_remove_entity)
+        else:
+            setattr(self, relationship.key, [])
+    
+            
