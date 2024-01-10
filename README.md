@@ -64,10 +64,11 @@ pip install sqlalchemy-nest
 
 ### Merge Nested Model
 
-1. Set declarative_base constructor and base cls
+1. Set declarative_base constructor and cls
 
     use ```declarative_nested_model_constructor```  and ```BaseModel``` for declarative_base
     
+    ⚠ sqlalchemy-nest checks viewonly to decide whether to update or not, so please set the viewonly property in the relationship. ⚠
 
     ```python
     from sqlalchemy import Column, ForeignKey, Integer, String
@@ -95,14 +96,9 @@ pip install sqlalchemy-nest
         root = relationship("Root", viewonly=True)
     ```
 
-1. Set declarative_base constructor and base cls
-
-add viewonly
-
 1. Update from **kwargs
 
-    sets attributes on the constructed instance using the names and values in kwargs.
-
+    
     ```python
     root = {
         'name': 'root',
