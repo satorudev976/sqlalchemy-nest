@@ -18,33 +18,28 @@ class BaseModel(object):
                 continue
             if kwargs.get(relationship.key):
                 relationship_cls = getattr(self, relationship.key)
-                if relationship_cls is None:
-                    self.add_relationship(relationship, **kwargs[relationship.key])
-                    continue    
-                if isinstance(kwargs.get(relationship.key), dict):
-                    relationship_cls.update(**kwargs.get(relationship.key))
-                else:
+                if isinstance(relationship_cls, list):  # one to many
                     pks = relationship.entity.primary_key
                     should_remove_entities = relationship_cls.copy()   
                     for elem in kwargs.get(relationship.key):
-                        if all(elem.get(pk.name) is not None for pk in pks):
-                            for entity in relationship_cls:
-                                if all(getattr(entity, pk.name) == elem.get(pk.name) for pk in pks):
-                                    entity.update(**elem)
-                                    should_remove_entities.remove(entity)
-                        else:
-                            self.add_relationship(relationship, **elem)                    
+                        if all(elem.get(pk.name) is None for pk in pks):
+                            relationship_cls.append(relationship.mapper.entity(**elem))
+                            continue
+                        
+                        for entity in relationship_cls:
+                            if all(getattr(entity, pk.name) == elem.get(pk.name) for pk in pks):
+                                entity.update(**elem)
+                                should_remove_entities.remove(entity)
+
                     for should_remove_entity in should_remove_entities:
                         relationship_cls.remove(should_remove_entity)
+                else:  # one to one
+                    if relationship_cls:
+                        relationship_cls.update(**kwargs.get(relationship.key))
+                    else:    
+                        setattr(self, relationship.key, relationship.mapper.entity(**kwargs.get(relationship.key)))
             else:
-                self.remove_relationship(relationship)
-    
-    def add_relationship(self, relationship, **kwargs: Any):
-        if isinstance(getattr(self, relationship.key), list):
-            relationship_cls = getattr(self, relationship.key)
-            relationship_cls.append(relationship.mapper.entity(**kwargs))
-        else:
-            setattr(self, relationship.key, relationship.mapper.entity(**kwargs))
+                self.remove_relationship(relationship)            
     
     def remove_relationship(self, relationship):
         if isinstance(getattr(self, relationship.key), list):
