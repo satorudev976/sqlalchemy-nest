@@ -36,7 +36,7 @@ class BaseModel(object):
         if kwargs.get(relationship.key):
             relationship_cls = getattr(self, relationship.key)
             pks = relationship.entity.primary_key
-            should_remove_entities = relationship_cls.copy()
+            should_remove_entities = relationship_cls[:]
             for elem in kwargs.get(relationship.key):
                 if all(elem.get(pk.name) is None for pk in pks):
                     relationship_cls.append(relationship.mapper.entity(**elem))
