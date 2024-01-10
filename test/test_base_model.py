@@ -33,7 +33,7 @@ class TestUpdateColumns:
         }
         with session() as session:
             reservation: Reservation = session.query(Reservation).filter(Reservation.id == 1).first()
-            reservation.update(**update_reservation)
+            reservation.merge(**update_reservation)
             session.commit()
             updated_reservation: Reservation = session.query(Reservation).filter(Reservation.id == 1).first()
             
@@ -51,7 +51,7 @@ class TestUpdateColumns:
         }
         with session() as session:
             reservation: Reservation = session.query(Reservation).filter(Reservation.id == 1).first()
-            reservation.update(**update_reservation)
+            reservation.merge(**update_reservation)
             session.commit()
             updated_reservation: Reservation = session.query(Reservation).filter(Reservation.id == 1).first()
             
@@ -66,7 +66,7 @@ class TestUpdateColumns:
         }
         with session() as session:
             reservation: Reservation = session.query(Reservation).filter(Reservation.id == 1).first()
-            reservation.update(**update_reservation)
+            reservation.merge(**update_reservation)
             session.commit()
             updated_reservation: Reservation = session.query(Reservation).filter(Reservation.id == 1).first()
             
@@ -84,7 +84,7 @@ class TestUpdateColumns:
         
         with session() as session:
             reservation: Reservation = session.query(Reservation).filter(Reservation.id == 1).first()
-            reservation.update(**update_reservation)
+            reservation.merge(**update_reservation)
             session.commit()
             updated_reservation: Reservation = session.query(Reservation).filter(Reservation.id == 1).first()
             
@@ -103,7 +103,7 @@ class TestUpdateColumns:
         }
         with session() as session:
             reservation: Reservation = session.query(Reservation).filter(Reservation.id == 1).first()
-            reservation.update(**update_reservation)
+            reservation.merge(**update_reservation)
             session.commit()
             updated_reservation: Reservation = session.query(Reservation).filter(Reservation.id == 1).first()
             
@@ -149,7 +149,7 @@ class TestOneToOne:
         }
         with session() as session:
             reservation: Reservation = session.query(Reservation).filter(Reservation.id == 1).first()
-            reservation.update(**update_reservation)
+            reservation.merge(**update_reservation)
             session.commit()
             updated_reservation: Reservation = session.query(Reservation).filter(Reservation.id == 1).first()
             
@@ -166,7 +166,7 @@ class TestOneToOne:
         }
         with session() as session:
             reservation: Reservation = session.query(Reservation).filter(Reservation.id == 1).first()
-            reservation.update(**update_reservation)
+            reservation.merge(**update_reservation)
             session.commit()
             updated_reservation: Reservation = session.query(Reservation).filter(Reservation.id == 1).first()
             
@@ -182,7 +182,7 @@ class TestOneToOne:
         }
         with session() as session:
             reservation: Reservation = session.query(Reservation).filter(Reservation.id == 1).first()
-            reservation.update(**update_reservation)
+            reservation.merge(**update_reservation)
             session.commit()
             updated_reservation: Reservation = session.query(Reservation).filter(Reservation.id == 1).first()
             
@@ -260,7 +260,7 @@ class TestOneToMany:
         
         with session() as session:
             root: Root = session.query(Root).filter(Root.id == 1).first()
-            root.update(**updat_root)
+            root.merge(**updat_root)
             session.commit()
             updated_root: Root = session.query(Root).filter(Root.id == 1).first()
             
@@ -310,7 +310,7 @@ class TestOneToMany:
         
         with session() as session:
             root: Root = session.query(Root).filter(Root.id == 1).first()
-            root.update(**updat_root)
+            root.merge(**updat_root)
             session.commit()
             updated_root: Root = session.query(Root).filter(Root.id == 1).first()
             
@@ -371,7 +371,7 @@ class TestOneToMany:
         
         with session() as session:
             root: Root = session.query(Root).filter(Root.id == 1).first()
-            root.update(**updat_root)
+            root.merge(**updat_root)
             session.commit()
             updated_root: Root = session.query(Root).filter(Root.id == 1).first()
             
@@ -417,7 +417,7 @@ class TestOneToMany:
         
         with session() as session:
             root: Root = session.query(Root).filter(Root.id == 1).first()
-            root.update(**updat_root)
+            root.merge(**updat_root)
             session.commit()
             updated_root: Root = session.query(Root).filter(Root.id == 1).first()
             
@@ -447,7 +447,7 @@ class TestOneToMany:
         
         with session() as session:
             root: Root = session.query(Root).filter(Root.id == 1).first()
-            root.update(**updat_root)
+            root.merge(**updat_root)
             session.commit()
             updated_root: Root = session.query(Root).filter(Root.id == 1).first()
             
@@ -509,7 +509,7 @@ class TestCreateOneToMany:
         
         with session() as session:
             root: Root = session.query(Root).filter(Root.id == 1).first()
-            root.update(**updat_root)
+            root.merge(**updat_root)
             session.commit()
             updated_root: Root = session.query(Root).filter(Root.id == 1).first()
             

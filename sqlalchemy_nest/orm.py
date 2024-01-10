@@ -4,7 +4,7 @@ from sqlalchemy.orm import class_mapper
 
 class BaseModel(object):
     
-    def update(self, **kwargs: Any) -> None:
+    def merge(self, **kwargs: Any) -> None:
         for column in class_mapper(type(self)).columns:
             if not column.foreign_keys and not column.primary_key:
                 setattr(self, column.key, kwargs.get(column.key))
@@ -26,7 +26,7 @@ class BaseModel(object):
         if kwargs.get(relationship.key):
             relationship_cls = getattr(self, relationship.key)
             if relationship_cls:
-                relationship_cls.update(**kwargs.get(relationship.key))
+                relationship_cls.merge(**kwargs.get(relationship.key))
             else:
                 setattr(self, relationship.key, relationship.mapper.entity(**kwargs.get(relationship.key)))
         else:
@@ -44,7 +44,7 @@ class BaseModel(object):
                 
                 for entity in relationship_cls:
                     if all(getattr(entity, pk.name) == elem.get(pk.name) for pk in pks):
-                        entity.update(**elem)
+                        entity.merge(**elem)
                         should_remove_entities.remove(entity)
 
             for should_remove_entity in should_remove_entities:
