@@ -1,7 +1,7 @@
 import pytest
 from datetime import date
 
-from test.models import Reservation, Root
+from tests.models import Reservation, Root
 
 
 class TestUpdateColumns:
