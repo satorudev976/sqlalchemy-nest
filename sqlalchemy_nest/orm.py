@@ -53,3 +53,14 @@ class BaseModel(object):
             setattr(self, relationship.key, [])
     
             
+    def __eq__(self, __value: object) -> bool:
+        
+        if __value is None or not isinstance(__value, BaseModel): return False
+        
+        for column in class_mapper(type(self)).columns:
+            if getattr(self, column.key) != getattr(__value, column.key):
+                return False
+        for composite in class_mapper(type(self)).composites:
+            if getattr(self, composite.key) != getattr(__value, composite.key):
+                return False
+        return True

@@ -220,9 +220,15 @@ class TestNotHasAttr:
             session.commit()
             new_reservation: Reservation = session.query(Reservation).filter(Reservation.id == 1).first()
             
-            assert new_reservation.id == 1
-            assert new_reservation.start_date == date(2024, 1, 1)
-            assert new_reservation.end_date == date(2024, 1, 2)
-            assert new_reservation.registration_card.id == 1
-            assert new_reservation.registration_card.reservation_id == new_reservation.id
-            assert new_reservation.registration_card.guest_name == 'Jon'
+            expect_reservation = Reservation(
+                id=1,
+                start_date=date(2024, 1, 1),
+                end_date=date(2024, 1, 2),
+                registration_card=RegistrationCard(
+                    id=1,
+                    guest_name='Jon',
+                    reservation_id=1
+                )
+            )
+        
+            assert new_reservation == expect_reservation
