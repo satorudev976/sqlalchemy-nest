@@ -1,6 +1,6 @@
 import pytest
 from datetime import date
-from test.models import Base, Branch, DateRange, Leaf, Node, RegistrationCard, Reservation, Root
+from tests.models import Base, Branch, DateRange, Leaf, Node, RegistrationCard, Reservation, Root
     
 
 class TestOneToMany:
