@@ -82,6 +82,7 @@ class TestOneToMany:
             assert new_root.branches[0].nodes[0].leaves[0].name == 'leaf_1'
             assert new_root.branches[0].nodes[0].leaves[1].name == 'leaf_2'
 
+
 class TestOneToOne:
     
     @pytest.fixture(autouse=True, scope="function")
@@ -93,128 +94,40 @@ class TestOneToOne:
             reservation: Reservation = session.query(Reservation).filter(Reservation.id == 1).first()
             session.delete(reservation)
             session.commit()
-        
-    def test_one_to_one_by_model(self, session):
-        reservation = {
-            'start_date': date(2024, 1, 1),
-            'end_date': date(2024, 1, 2),
-            'registration_card': {
-                'guest_name': 'Jon'
-            }
-        }
-        
-        with session() as session:
-            session.add(Reservation(**reservation))
-            session.commit()
-            new_reservation: Reservation = session.query(Reservation).filter(Reservation.id == 1).first()
-            
-            assert new_reservation.id == 1
-            assert new_reservation.start_date == date(2024, 1, 1)
-            assert new_reservation.end_date == date(2024, 1, 2)
-            assert new_reservation.registration_card.id == 1
-            assert new_reservation.registration_card.reservation_id == new_reservation.id
-            assert new_reservation.registration_card.guest_name == 'Jon'
 
-    def test_one_to_one_by_model(self, session):
-        reservation = Reservation(
-            start_date=date(2024, 1, 1),
-            end_date=date(2024, 1, 2),
-            registration_card=RegistrationCard(
-                guest_name='Jon'
-            )
-        )
-        
-        with session() as session:
-            session.add(reservation)
-            session.commit()
-            new_reservation: Reservation = session.query(Reservation).filter(Reservation.id == 1).first()
-            
-            assert new_reservation.id == 1
-            assert new_reservation.start_date == date(2024, 1, 1)
-            assert new_reservation.end_date == date(2024, 1, 2)
-            assert new_reservation.registration_card.id == 1
-            assert new_reservation.registration_card.reservation_id == new_reservation.id
-            assert new_reservation.registration_card.guest_name == 'Jon'
-
-class TestCompositeType:
-    
-    @pytest.fixture(autouse=True, scope="function")
-    def setup(self, session):
-        yield
-        
-        #remove test data
-        with session() as session:
-            reservation: Reservation = session.query(Reservation).filter(Reservation.id == 1).first()
-            session.delete(reservation)
-            session.commit()
-    
-    def test_composite_by_dict(self, session):
-        reservation = {
-            'date_range': {
-                'start': date(2024, 1, 1),
-                'end': date(2024, 1, 2),
-            },
-            'registration_card': {
-                'guest_name': 'Jon'
-            }
-        }
-        
-        with session() as session:
-            session.add(Reservation(**reservation))
-            session.commit()
-            new_reservation: Reservation = session.query(Reservation).filter(Reservation.id == 1).first()
-            
-            assert new_reservation.id == 1
-            assert new_reservation.start_date == date(2024, 1, 1)
-            assert new_reservation.end_date == date(2024, 1, 2)
-            assert new_reservation.date_range == DateRange(start=date(2024, 1, 1), end=date(2024, 1, 2))
-            assert new_reservation.registration_card.id == 1
-            assert new_reservation.registration_card.reservation_id == new_reservation.id
-            assert new_reservation.registration_card.guest_name == 'Jon'
-
-    def test_composite_by_model(self, session):
-        reservation = Reservation(
-            date_range=DateRange(start=date(2024, 1, 1), end=date(2024, 1, 2)),
-            registration_card=RegistrationCard(
-                guest_name='Jon'
-            )
-        )
-        
-        with session() as session:
-            session.add(reservation)
-            session.commit()
-            new_reservation: Reservation = session.query(Reservation).filter(Reservation.id == 1).first()
-            
-            assert new_reservation.id == 1
-            assert new_reservation.start_date == date(2024, 1, 1)
-            assert new_reservation.end_date == date(2024, 1, 2)
-            assert new_reservation.date_range == DateRange(start=date(2024, 1, 1), end=date(2024, 1, 2))
-            assert new_reservation.registration_card.id == 1
-            assert new_reservation.registration_card.reservation_id == new_reservation.id
-            assert new_reservation.registration_card.guest_name == 'Jon'
-
-class TestNotHasAttr:
-    
-    @pytest.fixture(autouse=True, scope="function")
-    def setup(self, session):
-        yield
-        
-        #remove test data
-        with session() as session:
-            reservation: Reservation = session.query(Reservation).filter(Reservation.id == 1).first()
-            session.delete(reservation)
-            session.commit()
-            
-    def test_not_hasattr_by_dict(self, session):
-        reservation = {
-            'is_vip': True,
-            'start_date': date(2024, 1, 1),
-            'end_date': date(2024, 1, 2),
-            'registration_card': {
-                'guest_name': 'Jon'
-            }
-        }
-        
+    @pytest.mark.parametrize(
+        "reservation",
+        [
+            # 
+            pytest.param({
+                'start_date': date(2024, 1, 1),
+                'end_date': date(2024, 1, 2),
+                'registration_card': {
+                    'guest_name': 'Jon'
+                }
+            }),
+            # not hasattr (is_vip)
+            pytest.param({
+                'is_vip': True,
+                'start_date': date(2024, 1, 1),
+                'end_date': date(2024, 1, 2),
+                'registration_card': {
+                    'guest_name': 'Jon'
+                }
+            }),
+            # composit (date_range)
+            pytest.param({
+                'date_range': {
+                    'start': date(2024, 1, 1),
+                    'end': date(2024, 1, 2),
+                },
+                'registration_card': {
+                    'guest_name': 'Jon'
+                }
+            })
+        ],
+    )
+    def test_one_to_one_by_dict(self, reservation, session):
         with session() as session:
             session.add(Reservation(**reservation))
             session.commit()
@@ -232,3 +145,41 @@ class TestNotHasAttr:
             )
         
             assert new_reservation == expect_reservation
+    
+    
+    @pytest.mark.parametrize(
+        "reservation",
+        [
+            pytest.param(Reservation(
+                start_date=date(2024, 1, 1),
+                end_date=date(2024, 1, 2),
+                registration_card=RegistrationCard(
+                    guest_name='Jon'
+                )
+            )),
+            # composit (date_range)
+            pytest.param(Reservation(
+                date_range=DateRange(
+                    start=date(2024, 1, 1), 
+                    end=date(2024, 1, 2)
+                ),
+                registration_card=RegistrationCard(
+                    guest_name='Jon'
+                )
+            ))
+            
+        ]
+    )
+    def test_one_to_one_by_model(self, reservation, session): 
+        with session() as session:
+            session.add(reservation)
+            session.commit()
+            new_reservation: Reservation = session.query(Reservation).filter(Reservation.id == 1).first()
+            
+            assert new_reservation.id == 1
+            assert new_reservation.start_date == date(2024, 1, 1)
+            assert new_reservation.end_date == date(2024, 1, 2)
+            assert new_reservation.registration_card.id == 1
+            assert new_reservation.registration_card.reservation_id == new_reservation.id
+            assert new_reservation.registration_card.guest_name == 'Jon'
+    
