@@ -60,12 +60,25 @@ class TestUpdateColumns:
             assert updated_reservation.id == 1
             assert updated_reservation.start_date == date(2024, 2, 1)
             assert updated_reservation.end_date == date(2024, 2, 2)
-        
-    def test_remove_columns(self, session):
-        update_reservation = {
-            'id': 1,
-            'start_date': date(2024, 2, 1),
-        }
+    
+    @pytest.mark.parametrize(
+        "update_reservation",
+        [
+            pytest.param({
+                'id': 1,
+            }),
+            pytest.param({
+                'id': 1,
+                'start_date': None,
+                'end_date': None
+            }),
+            pytest.param({
+                'id': 1,
+                'date_range': None
+            })
+        ]
+    )
+    def test_remove_columns(self, update_reservation, session):
         with session() as session:
             reservation: Reservation = session.query(Reservation).filter(Reservation.id == 1).first()
             reservation.merge(**update_reservation)
@@ -73,7 +86,7 @@ class TestUpdateColumns:
             updated_reservation: Reservation = session.query(Reservation).filter(Reservation.id == 1).first()
             
             assert updated_reservation.id == 1
-            assert updated_reservation.start_date == date(2024, 2, 1)
+            assert updated_reservation.start_date == None
             assert updated_reservation.end_date == None
         
     def test_add_one_to_one(self, session):
@@ -157,22 +170,6 @@ class TestOneToOne:
             assert updated_reservation.id == 1
             assert updated_reservation.start_date == date(2024, 2, 1)
             assert updated_reservation.end_date == date(2024, 2, 2)
-            assert updated_reservation.registration_card == None
-
-    def test_remove_by_composite(self, session):
-        update_reservation = {
-            'id': 1,
-            'date_range': None
-        }
-        with session() as session:
-            reservation: Reservation = session.query(Reservation).filter(Reservation.id == 1).first()
-            reservation.merge(**update_reservation)
-            session.commit()
-            updated_reservation: Reservation = session.query(Reservation).filter(Reservation.id == 1).first()
-            
-            assert updated_reservation.id == 1
-            assert updated_reservation.start_date == None
-            assert updated_reservation.end_date == None
             assert updated_reservation.registration_card == None
 
 class TestOneToMany:
