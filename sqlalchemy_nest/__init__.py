@@ -21,11 +21,10 @@ def declarative_nested_model_constructor(self: Any, **kwargs: Any) -> None:
             continue
         
         if isinstance(v, list):  # "one-to-many"
-            for elem in v:
-                if isinstance(elem, dict):
-                    setattr(self, k, [relationships[k].mapper.entity(**elem) for elem in v])
-                else:
-                    setattr(self, k, v)        
+            if all(isinstance(elem, dict) for elem in v):
+                setattr(self, k, [relationships[k].mapper.entity(**elem) for elem in v])
+            else:
+                setattr(self, k, v)
         elif isinstance(v, dict):  # "one-to-one"
             if k in relationships:
                 setattr(self, k, relationships[k].mapper.entity(**v))
