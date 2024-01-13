@@ -11,7 +11,7 @@ class BaseModel(object):
         
         for composite in class_mapper(type(self)).composites:
             if kwargs.get(composite.key):
-                setattr(self, composite.key, composite.composite_class(**kwargs[composite.key]))
+                setattr(self, composite.key, composite.composite_class(**kwargs.get(composite.key)))
         
         for relationship in class_mapper(type(self)).relationships:
             if relationship.viewonly:
