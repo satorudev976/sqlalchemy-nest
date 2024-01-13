@@ -43,14 +43,12 @@ class BaseModel(object):
         pks = relationship.entity.primary_key
         should_remove_entities = relationship_entities[:]
         for elem in values:
-            if all(elem.get(pk.name) is None for pk in pks):
-                relationship_entities.append(relationship.mapper.entity(**elem))
-                continue
-            
             for entity in relationship_entities:
                 if all(getattr(entity, pk.name) == elem.get(pk.name) for pk in pks):
                     entity.merge(**elem)
                     should_remove_entities.remove(entity)
+            if all(elem.get(pk.name) is None for pk in pks):
+                relationship_entities.append(relationship.mapper.entity(**elem))
 
         for should_remove_entity in should_remove_entities:
             relationship_entities.remove(should_remove_entity)
