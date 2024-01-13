@@ -19,25 +19,26 @@ class BaseModel(object):
             if relationship.viewonly:
                 continue
             
-            if isinstance(kwargs.get(relationship.key), list) or isinstance(getattr(self, relationship.key), list):
-                if kwargs.get(relationship.key):
-                    self._merge_one_to_many_relationship(relationship, kwargs.get(relationship.key))
+            value = kwargs.get(relationship.key)
+            if isinstance(value, list) or isinstance(getattr(self, relationship.key), list):
+                if value:
+                    self._merge_one_to_many_relationship(relationship, value)
                 else:
                     setattr(self, relationship.key, [])
             else:
-                if kwargs.get(relationship.key):
-                    self._merge_one_to_one_relationship(relationship, kwargs.get(relationship.key))
+                if value:
+                    self._merge_one_to_one_relationship(relationship, value)
                 else:
                     setattr(self, relationship.key, None)
 
-    def _merge_one_to_one_relationship(self, relationship: RelationshipProperty[Any], value):
+    def _merge_one_to_one_relationship(self, relationship: RelationshipProperty[Any], value: dict[str, Any]):
         relationship_entity: BaseModel = getattr(self, relationship.key)
         if relationship_entity:
             relationship_entity.merge(**value)
         else:
             setattr(self, relationship.key, relationship.mapper.entity(**value))
 
-    def _merge_one_to_many_relationship(self, relationship: RelationshipProperty[Any], values):
+    def _merge_one_to_many_relationship(self, relationship: RelationshipProperty[Any], values: list[dict[str, Any]]):
         relationship_entities: list[BaseModel] = getattr(self, relationship.key)
         pks = relationship.entity.primary_key
         should_remove_entities = relationship_entities[:]
