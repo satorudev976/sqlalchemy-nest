@@ -1,6 +1,6 @@
 from typing import Any
 from sqlalchemy.orm import class_mapper
-
+from sqlalchemy.orm.properties import RelationshipProperty
 
 class BaseModel(object):
     
@@ -22,7 +22,7 @@ class BaseModel(object):
             else:
                 self._merge_one_to_one_relationship(relationship, **kwargs)
 
-    def _merge_one_to_one_relationship(self, relationship, **kwargs: Any):
+    def _merge_one_to_one_relationship(self, relationship: RelationshipProperty[Any], **kwargs: Any):
         if kwargs.get(relationship.key):
             relationship_cls = getattr(self, relationship.key)
             if relationship_cls:
@@ -32,7 +32,7 @@ class BaseModel(object):
         else:
             setattr(self, relationship.key, None)
 
-    def _merge_one_to_many_relationship(self, relationship, **kwargs: Any):
+    def _merge_one_to_many_relationship(self, relationship: RelationshipProperty[Any], **kwargs: Any):
         if kwargs.get(relationship.key):
             relationship_cls = getattr(self, relationship.key)
             pks = relationship.entity.primary_key
