@@ -41,14 +41,16 @@ class BaseModel(object):
     def _merge_one_to_many_relationship(self, relationship: RelationshipProperty[Any], values: list[dict[str, Any]]):
         relationship_entities: list[BaseModel] = getattr(self, relationship.key)
         pks = relationship.entity.primary_key
-        should_remove_entities = relationship_entities[:]
-        for elem in values:
-            for entity in relationship_entities:
+
+        for entity in relationship_entities:
+            if all(getattr(entity, pk.name) != elem.get(pk.name) for pk in pks for elem in values):
+                relationship_entities.remove(entity)
+
+        for entity in relationship_entities:
+            for elem in values:
                 if all(getattr(entity, pk.name) == elem.get(pk.name) for pk in pks):
                     entity.merge(**elem)
-                    should_remove_entities.remove(entity)
+
+        for elem in values:
             if all(elem.get(pk.name) is None for pk in pks):
                 relationship_entities.append(relationship.mapper.entity(**elem))
-
-        for should_remove_entity in should_remove_entities:
-            relationship_entities.remove(should_remove_entity)
