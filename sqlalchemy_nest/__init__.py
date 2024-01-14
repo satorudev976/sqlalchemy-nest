@@ -16,19 +16,19 @@ def declarative_nested_model_constructor(self: Any, **kwargs: Any) -> None:
     relationships = class_mapper(cls_).relationships
     composites = class_mapper(cls_).composites
     
-    for k, v in kwargs.items():
-        if not hasattr(cls_, k):
+    for key, value in kwargs.items():
+        if not hasattr(cls_, key):
             continue
         
-        if isinstance(v, list):  # "one-to-many"
-            if all(isinstance(elem, dict) for elem in v):
-                setattr(self, k, [relationships[k].mapper.entity(**elem) for elem in v])
+        if isinstance(value, list):  # "one-to-many"
+            if all(isinstance(elem, dict) for elem in value):
+                setattr(self, key, [relationships[key].mapper.entity(**elem) for elem in value])
             else:
-                setattr(self, k, v)
-        elif isinstance(v, dict):  # "one-to-one"
-            if k in relationships:
-                setattr(self, k, relationships[k].mapper.entity(**v))
-            if k in composites:
-                setattr(self, k, composites[k].composite_class(**v))
+                setattr(self, key, value)
+        elif isinstance(value, dict):  # "one-to-one"
+            if key in relationships:
+                setattr(self, key, relationships[key].mapper.entity(**value))
+            if key in composites:
+                setattr(self, key, composites[key].composite_class(**value))
         else:
-            setattr(self, k, v)
+            setattr(self, key, value)
