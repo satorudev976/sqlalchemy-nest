@@ -32,9 +32,6 @@ class BaseModel(object):
                 setattr(self, composite.key, composite.composite_class(**value))
 
         for relationship in class_mapper(type(self)).relationships:
-            if relationship.viewonly:
-                continue
-
             value = kwargs.get(relationship.key)
             if isinstance(value, list) or isinstance(getattr(self, relationship.key), list):
                 if value:
