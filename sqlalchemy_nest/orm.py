@@ -4,21 +4,37 @@ from sqlalchemy.orm.properties import RelationshipProperty
 
 
 class BaseModel(object):
-    
+    """Base class used for declarative_base.
+
+    The :class:`BaseModel` can updating of nested models from keywords
+    This class should set to sqlalchemy `declarative_base` as base class like this:
+    .. code-block:: python
+
+        from sqlalchemy.orm import declarative_base
+
+        from sqlalchemy_nest import declarative_nested_model_constructor
+        from sqlalchemy_nest.orm import BaseModel
+
+        Base = declarative_base(cls=BaseModel, constructor=declarative_nested_model_constructor)
+
+        class MyTable(Base):
+            __tablename__ = "my_table"
+    """
+
     def merge(self, **kwargs: Any) -> None:
         for column in class_mapper(type(self)).columns:
             if not column.foreign_keys and not column.primary_key:
                 setattr(self, column.key, kwargs.get(column.key))
-        
+
         for composite in class_mapper(type(self)).composites:
             value = kwargs.get(composite.key)
             if value:
                 setattr(self, composite.key, composite.composite_class(**value))
-        
+
         for relationship in class_mapper(type(self)).relationships:
             if relationship.viewonly:
                 continue
-            
+
             value = kwargs.get(relationship.key)
             if isinstance(value, list) or isinstance(getattr(self, relationship.key), list):
                 if value:
