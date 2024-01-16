@@ -26,10 +26,16 @@ SQLAlchemy = ">=0.7"
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.4.4"
 pytest-cov = "^4.1.0"
-flake8 = "^7.0.0"
+pyproject-flake8 = "^6.1.0"
 
 [tool.pytest.ini_options]
 addopts = "--cov=sqlalchemy_nest --cov-branch --cov-report=term-missing --cov-report=html"
+
+[tool.flake8]
+max-line-length = 127
+extend-ignore = ["W293"]
+exclude = ["tests"]
+max-complexity = 10
 
 [build-system]
 requires = ["poetry-core"]

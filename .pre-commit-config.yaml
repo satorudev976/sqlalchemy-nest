@@ -14,6 +14,8 @@ repos:
     -   id: mypy
         args: [--ignore-missing-imports]
 -   repo: https://github.com/pycqa/flake8
-    rev: 7.0.0
+    rev: 6.1.0
     hooks:
     -   id: flake8
+        entry: pflake8
+        additional_dependencies: [pyproject-flake8]
