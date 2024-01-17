@@ -34,6 +34,10 @@ mypy = "^1.8.0"
 [tool.pytest.ini_options]
 addopts = "--cov=sqlalchemy_nest --cov-branch --cov-report=term-missing --cov-report=html"
 
+[tool.mypy]
+show_error_codes = true
+ignore_missing_imports = true
+
 [tool.flake8]
 max-line-length = 127
 extend-ignore = ["W293"]
