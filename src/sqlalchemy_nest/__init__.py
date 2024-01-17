@@ -12,14 +12,14 @@ def declarative_nested_model_constructor(self: Any, **kwargs: Any) -> None:
     for example, any mapped columns or relationships or composites.
     """
     cls_ = type(self)
-    
+
     relationships = class_mapper(cls_).relationships
     composites = class_mapper(cls_).composites
-    
+
     for key, value in kwargs.items():
         if not hasattr(cls_, key):
             continue
-        
+
         if isinstance(value, list):  # "one-to-many"
             if all(isinstance(elem, dict) for elem in value):
                 setattr(self, key, [relationships[key].mapper.entity(**elem) for elem in value])
