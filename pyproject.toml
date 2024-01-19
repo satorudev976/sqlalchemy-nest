@@ -41,6 +41,10 @@ addopts = "--cov=sqlalchemy_nest --cov-branch --cov-report=term-missing --cov-re
 show_error_codes = true
 ignore_missing_imports = true
 
+[[tool.mypy.overrides]]
+ignore_errors = true
+module = ["tests.*"]
+
 [tool.black]
 target-version = ['py39']
 line-length = 127
