@@ -9,10 +9,8 @@ name: Publish Python 🐍 distribution 📦 to TestPyPI
 
 on:
   push:
-    branches:
-        - '**'
     tags:
-        - 'v*'
+      - "v*.*.*"
 
 jobs:
   deploy:
