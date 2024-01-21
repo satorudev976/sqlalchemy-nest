@@ -30,7 +30,6 @@ SQLAlchemy = ">=0.7"
 pytest = "^7.4.4"
 pytest-cov = "^4.1.0"
 mypy = "^1.8.0"
-black = "^23.12.1"
 ruff = "^0.1.14"
 
 [tool.pytest.ini_options]
@@ -45,11 +44,8 @@ ignore_missing_imports = true
 ignore_errors = true
 module = ["tests.*"]
 
-[tool.black]
-target-version = ['py39']
-line-length = 127
-
 [tool.ruff]
+target-version = "py39"
 exclude = ["tests"]
 line-length = 127
 select = [
@@ -61,6 +57,9 @@ select = [
 
 [tool.ruff.mccabe]
 max-complexity = 10
+
+[tool.ruff.format]
+quote-style = "double"
 
 [build-system]
 requires = ["poetry-core"]
