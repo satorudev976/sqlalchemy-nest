@@ -27,6 +27,28 @@ def _declarative_constructor(self: Any, **kwargs: Any) -> None:
 So can’t create nested model by unpacking schema like below. OMG !!!
 
 ```python
+from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy.orm import declarative_base, relationship
+
+Base = declarative_base()
+
+class Root(Base):
+    __tablename__ = "root"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    name = Column(String(100))
+
+    branches = relationship("Branch", back_populates="root", uselist=True, lazy="joined")
+
+class Branch(Base):
+    __tablename__ = "branch"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    name = Column(String(100))
+    root_id = Column(Integer, ForeignKey("root.id"))
+
+    root = relationship("Root")
+
 root = {
     'name': 'root',
     'branches': [
@@ -35,7 +57,8 @@ root = {
         },
     ]
 }
->>> session.add(Root(**root))
+
+created_root = Root(**root)
 >>> AttributeError: 'dict' object has no attribute '_sa_instance_state'
 ```
 
