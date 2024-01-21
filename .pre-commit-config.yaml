@@ -12,8 +12,14 @@ repos:
     rev: v1.8.0
     hooks:
     -   id: mypy
-        args: [--ignore-missing-imports]
+        args: [--config-file=pyproject.toml]
+-   repo: https://github.com/python/black
+    rev: 23.12.1
+    hooks:
+    -   id: black
 -   repo: https://github.com/pycqa/flake8
-    rev: 7.0.0
+    rev: 6.1.0
     hooks:
     -   id: flake8
+        entry: pflake8
+        additional_dependencies: [pyproject-flake8]

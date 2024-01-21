@@ -1,0 +1,60 @@
+[tool.poetry]
+name = "sqlalchemy-nest"
+version = "1.1.2"
+description = "easy create nested models for sqlalchemy"
+authors = ["satoru"]
+license = "MIT"
+readme = "README.md"
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Software Development :: Libraries :: Python Modules"
+]
+packages = [{include = "sqlalchemy_nest", from = "src"}]
+
+[project.urls]
+"Homepage" = "https://github.com/satorudev976/sqlalchemy-nest"
+"Bug Tracker" = "https://github.com/satorudev976/sqlalchemy-nest/issues"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+SQLAlchemy = ">=0.7"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.4"
+pytest-cov = "^4.1.0"
+pyproject-flake8 = "^6.1.0"
+mypy = "^1.8.0"
+black = "^23.12.1"
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+addopts = "--cov=sqlalchemy_nest --cov-branch --cov-report=term-missing --cov-report=html"
+
+[tool.mypy]
+show_error_codes = true
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+ignore_errors = true
+module = ["tests.*"]
+
+[tool.black]
+target-version = ['py39']
+line-length = 127
+
+[tool.flake8]
+max-line-length = 127
+extend-ignore = ["W293"]
+exclude = ["tests"]
+max-complexity = 10
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

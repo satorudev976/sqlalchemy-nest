@@ -4,15 +4,9 @@ from sqlalchemy.orm import sessionmaker
 from tests.models import Base
 
 
-SQLALCHEMY_DATABASE_URL = "sqlite:///:memory:"
-
-
 @pytest.fixture(scope="session")
 def session():
-    engine = create_engine(
-        SQLALCHEMY_DATABASE_URL, 
-        connect_args={"check_same_thread": False}
-    )
+    engine = create_engine("sqlite:///:memory:", connect_args={"check_same_thread": False})
 
     Base.metadata.create_all(bind=engine)
 
