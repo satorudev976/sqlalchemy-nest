@@ -148,8 +148,7 @@ pip install sqlalchemy-nest
     >>> session.commit()
     >>> added_root: Root = session.query(Root).filter(Root.id == 1).first()
     Root(id=1, name='root', branches=[
-        Branch(id=1, name='branch', root_id=1)
-        ]
+        Branch(id=1, name='branch', root_id=1)]
     )
 
     update_root = {
@@ -170,7 +169,6 @@ pip install sqlalchemy-nest
     >>> updated_root: Root = session.query(Root).filter(Root.id == 1).first()
     Root(id=1, name='updated_root', branches=[
         Branch(id=1, name='updated_branch', root_id=1),
-        Branch(id=2, name='created_branch', root_id=1)
-        ]
+        Branch(id=2, name='created_branch', root_id=1)]
     )
     ```
