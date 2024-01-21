@@ -17,9 +17,8 @@ repos:
     rev: 23.12.1
     hooks:
     -   id: black
--   repo: https://github.com/pycqa/flake8
-    rev: 6.1.0
+-   repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.1.13
     hooks:
-    -   id: flake8
-        entry: pflake8
-        additional_dependencies: [pyproject-flake8]
+    -   id: ruff
+        args: [--config, pyproject.toml]

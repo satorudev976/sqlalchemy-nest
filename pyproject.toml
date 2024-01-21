@@ -29,9 +29,9 @@ SQLAlchemy = ">=0.7"
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.4.4"
 pytest-cov = "^4.1.0"
-pyproject-flake8 = "^6.1.0"
 mypy = "^1.8.0"
 black = "^23.12.1"
+ruff = "^0.1.14"
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]
@@ -49,10 +49,17 @@ module = ["tests.*"]
 target-version = ['py39']
 line-length = 127
 
-[tool.flake8]
-max-line-length = 127
-extend-ignore = ["W293"]
+[tool.ruff]
 exclude = ["tests"]
+line-length = 127
+select = [
+    "C9",
+    "E",
+    "F",
+    "W",
+]
+
+[tool.ruff.mccabe]
 max-complexity = 10
 
 [build-system]
