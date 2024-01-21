@@ -20,8 +20,7 @@ classifiers = [
 packages = [{include = "sqlalchemy_nest", from = "src"}]
 
 [project.urls]
-"Homepage" = "https://github.com/satorudev976/sqlalchemy-nest"
-"Bug Tracker" = "https://github.com/satorudev976/sqlalchemy-nest/issues"
+repository = "https://github.com/satorudev976/sqlalchemy-nest"
 
 [tool.poetry.dependencies]
 python = "^3.9"
