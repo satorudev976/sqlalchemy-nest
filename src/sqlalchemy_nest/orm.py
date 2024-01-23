@@ -20,6 +20,7 @@ class BaseModel(object):
         class MyTable(Base):
             __tablename__ = "my_table"
     """
+
     def merge(self, **kwargs: Any) -> None:
         self._merge(**kwargs)
 
