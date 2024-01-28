@@ -127,8 +127,6 @@ pip install sqlalchemy-nest
 
     use ```declarative_nested_model_constructor```  and ```BaseModel``` for declarative_base
 
-    ⚠ sqlalchemy-nest checks viewonly to decide whether to update or not, so please set the viewonly property in the relationship. ⚠
-
     ```python
     from sqlalchemy import Column, ForeignKey, Integer, String
     from sqlalchemy.orm import declarative_base, relationship
@@ -152,7 +150,8 @@ pip install sqlalchemy-nest
         name = Column(String(100))
         root_id = Column(Integer, ForeignKey("root.id"))
 
-        root = relationship("Root", viewonly=True)
+        root = relationship("Root")
+    
     ```
 
 1. Update from **kwargs
