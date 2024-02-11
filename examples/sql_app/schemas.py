@@ -1,3 +1,4 @@
+from typing import Optional
 from pydantic import BaseModel, ConfigDict
 
 
@@ -7,6 +8,10 @@ class ItemBase(BaseModel):
 
 
 class ItemCreate(ItemBase):
+    pass
+
+
+class ItemUpdate(ItemBase):
     pass
 
 
@@ -26,6 +31,12 @@ class UserCreate(UserBase):
     password: str
     # Add items (create items by sqlalchemy-nest)
     items: list[ItemCreate] = []
+
+
+class UserUpdate(UserBase):
+    is_active: Optional[bool]
+    # Add items (create items by sqlalchemy-nest)
+    items: list[ItemUpdate] = []
 
 
 class User(UserBase):
