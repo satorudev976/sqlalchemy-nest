@@ -5,6 +5,7 @@
 [![Downloads](https://static.pepy.tech/badge/sqlalchemy-nest)](https://pepy.tech/project/sqlalchemy-nest)
 [![CI](https://github.com/satorudev976/sqlalchemy-nest/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/satorudev976/sqlalchemy-nest/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/satorudev976/sqlalchemy-nest/graph/badge.svg?token=67ESOOAA5E)](https://codecov.io/gh/satorudev976/sqlalchemy-nest)
+[![Maintainability](https://api.codeclimate.com/v1/badges/7c8a77a2447deec781ce/maintainability)](https://codeclimate.com/github/satorudev976/sqlalchemy-nest/maintainability)
 
 sqlalchemy-nest is easy create nested models for sqlalchemy
 
