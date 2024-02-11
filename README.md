@@ -151,7 +151,7 @@ pip install sqlalchemy-nest
         root_id = Column(Integer, ForeignKey("root.id"))
 
         root = relationship("Root")
-    
+
     ```
 
 1. Update from **kwargs
@@ -194,3 +194,7 @@ pip install sqlalchemy-nest
         Branch(id=2, name='created_branch', root_id=1)]
     )
     ```
+
+### Development
+
+Please refer to the [CONTRIBUTING](CONTRIBUTING.md)
