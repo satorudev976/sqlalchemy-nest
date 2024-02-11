@@ -24,6 +24,8 @@ class UserBase(BaseModel):
 
 class UserCreate(UserBase):
     password: str
+    # Add items (create items by sqlalchemy-nest)
+    items: list[ItemCreate] = []
 
 
 class User(UserBase):
