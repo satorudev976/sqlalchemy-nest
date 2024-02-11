@@ -43,3 +43,9 @@ def read_user(user_id: int, db: Session = Depends(get_db)):
 @app.put("/users/{user_id}", response_model=schemas.User)
 def update_user(user_id: int, user: schemas.UserUpdate, db: Session = Depends(get_db)):
     return crud.update_user(db=db, user_id=user_id, user=user)
+
+
+@app.get("/items/", response_model=list[schemas.Item])
+def read_items(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    items = crud.get_items(db, skip=skip, limit=limit)
+    return items

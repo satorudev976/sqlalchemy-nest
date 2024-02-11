@@ -34,7 +34,7 @@ class UserCreate(UserBase):
 
 
 class UserUpdate(UserBase):
-    is_active: Optional[bool]
+    is_active: bool = True
     # Add items (create items by sqlalchemy-nest)
     items: list[ItemUpdate] = []
 
