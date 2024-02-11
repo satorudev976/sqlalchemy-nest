@@ -16,7 +16,7 @@ def get_users(db: Session, skip: int = 0, limit: int = 100):
 
 
 def create_user(db: Session, user: schemas.UserCreate):
-    db_user = models.User(**user.model_dump())  # Initialization from **kwargs
+    db_user = models.User(**user.model_dump())  # Create from **kwargs
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
@@ -25,7 +25,7 @@ def create_user(db: Session, user: schemas.UserCreate):
 
 def update_user(db: Session, user_id: int, user: schemas.UserUpdate):
     db_user: models.User = get_user(db, user_id)
-    db_user.merge(**user.model_dump())
+    db_user.merge(**user.model_dump()) # Update from **kwargs
     db.commit()
     db.refresh(db_user)
     return db_user
