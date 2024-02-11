@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class ItemBase(BaseModel):
@@ -14,8 +14,8 @@ class Item(ItemBase):
     id: int
     owner_id: int
 
-    class Config:
-        orm_mode = True
+    # Valid config keys have changed in pydantic V2
+    model_config = ConfigDict(from_attributes=True)
 
 
 class UserBase(BaseModel):
@@ -31,5 +31,5 @@ class User(UserBase):
     is_active: bool
     items: list[Item] = []
 
-    class Config:
-        orm_mode = True
+    # Valid config keys have changed in pydantic V2
+    model_config = ConfigDict(from_attributes=True)
