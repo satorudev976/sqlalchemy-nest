@@ -1,0 +1,4 @@
+fastapi
+uvicorn
+sqlalchemy
+sqlalchemy-nest==1.2.0
