@@ -1,20 +1,20 @@
 import pytest
 from datetime import date
 from tests.models import Branch, DateRange, Leaf, Node, RegistrationCard, Reservation, Root
-    
+
 
 class TestOneToMany:
     @pytest.fixture(autouse=True, scope="function")
     def setup(self, session):
         yield
-        
+
         # remove test data
         with session() as session:
             root: Root = session.query(Root).filter(Root.id == 1).first()
             session.delete(root)
             session.commit()
-        
-    
+
+
     def test_one_to_many_by_dict(self, session):
         root = {
             'name': 'root',
@@ -35,14 +35,14 @@ class TestOneToMany:
                         }
                     ]
                 },
-            ] 
+            ]
         }
-        
+
         with session() as session:
             session.add(Root(**root))
             session.commit()
             new_root: Root = session.query(Root).filter(Root.id == 1).first()
-            
+
             assert new_root.id == 1
             assert new_root.name == 'root'
             assert len(new_root.branches) == 1
@@ -54,8 +54,22 @@ class TestOneToMany:
             assert len(new_root.branches[0].nodes[0].leaves) == 2
             assert new_root.branches[0].nodes[0].leaves[0].name == 'leaf_1'
             assert new_root.branches[0].nodes[0].leaves[1].name == 'leaf_2'
-        
-                
+
+    def test_one_to_many_within_none(self, session):
+        root = {
+            'name': 'root',
+            'branches': None
+        }
+
+        with session() as session:
+            session.add(Root(**root))
+            session.commit()
+            new_root: Root = session.query(Root).filter(Root.id == 1).first()
+
+            assert new_root.id == 1
+            assert new_root.name == 'root'
+            assert len(new_root.branches) == 0
+
     def test_one_to_many_by_model(self, session):
         root = Root(name='root', branches=[
             Branch(name='branch', nodes=[
@@ -69,7 +83,7 @@ class TestOneToMany:
             session.add(root)
             session.commit()
             new_root: Root = session.query(Root).filter(Root.id == 1).first()
-            
+
             assert new_root.id == 1
             assert new_root.name == 'root'
             assert len(new_root.branches) == 1
@@ -83,11 +97,11 @@ class TestOneToMany:
             assert new_root.branches[0].nodes[0].leaves[1].name == 'leaf_2'
 
 class TestOneToOne:
-    
+
     @pytest.fixture(autouse=True, scope="function")
     def setup(self, session):
         yield
-        
+
         #remove test data
         with session() as session:
             reservation: Reservation = session.query(Reservation).filter(Reservation.id == 1).first()
@@ -130,7 +144,7 @@ class TestOneToOne:
             session.add(Reservation(**reservation))
             session.commit()
             new_reservation: Reservation = session.query(Reservation).filter(Reservation.id == 1).first()
-                    
+
             assert new_reservation.id == 1
             assert new_reservation.start_date == date(2024, 1, 1)
             assert new_reservation.end_date == date(2024, 1, 2)
@@ -138,8 +152,8 @@ class TestOneToOne:
             assert new_reservation.registration_card.reservation_id == new_reservation.id
             assert new_reservation.registration_card.guest_name == 'Jon'
 
-    
-    
+
+
     @pytest.mark.parametrize(
         "reservation",
         [
@@ -153,22 +167,22 @@ class TestOneToOne:
             # composit (date_range)
             pytest.param(Reservation(
                 date_range=DateRange(
-                    start=date(2024, 1, 1), 
+                    start=date(2024, 1, 1),
                     end=date(2024, 1, 2)
                 ),
                 registration_card=RegistrationCard(
                     guest_name='Jon'
                 )
             ))
-            
+
         ]
     )
-    def test_one_to_one_by_model(self, reservation, session): 
+    def test_one_to_one_by_model(self, reservation, session):
         with session() as session:
             session.add(reservation)
             session.commit()
             new_reservation: Reservation = session.query(Reservation).filter(Reservation.id == 1).first()
-            
+
             assert new_reservation.id == 1
             assert new_reservation.start_date == date(2024, 1, 1)
             assert new_reservation.end_date == date(2024, 1, 2)

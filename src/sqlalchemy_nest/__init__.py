@@ -17,7 +17,7 @@ def declarative_nested_model_constructor(self: Any, **kwargs: Any) -> None:
     composites = class_mapper(cls_).composites
 
     for key, value in kwargs.items():
-        if not hasattr(cls_, key):
+        if not hasattr(cls_, key) or not value:
             continue
 
         if isinstance(value, list):  # "one-to-many"
