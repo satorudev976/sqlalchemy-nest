@@ -51,6 +51,14 @@ class BaseModel(object):
                 setattr(self, composite.key, composite.composite_class(**value))
 
     def _merge_relationships(self, mapper: Mapper, parent=None, **kwargs: Any) -> None:
+        """
+        Merge the relationships of a mapper.
+
+        Args:
+            mapper: The mapper whose relationships to merge.
+            parent: The parent entity. If the parent is an instance of the relationship entity, the relationship is skipped.
+            kwargs: The values to merge into the relationships.
+        """
         for relationship in mapper.relationships:
             if isinstance(parent, relationship.mapper.entity):
                 continue
