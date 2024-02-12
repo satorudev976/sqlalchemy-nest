@@ -52,7 +52,7 @@ class BaseModel(object):
 
     def _merge_relationships(self, mapper: Mapper, parent=None, **kwargs: Any) -> None:
         for relationship in mapper.relationships:
-            if parent and type(parent) == relationship.mapper.entity:
+            if isinstance(parent, relationship.mapper.entity):
                 continue
 
             value = kwargs.get(relationship.key)
