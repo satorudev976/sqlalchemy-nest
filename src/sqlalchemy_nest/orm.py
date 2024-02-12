@@ -75,14 +75,14 @@ class BaseModel(object):
                 else:
                     setattr(self, relationship.key, None)
 
-    def _merge_one_to_one_relationship(self, relationship: RelationshipProperty[Any], value: dict[str, Any]):
+    def _merge_one_to_one_relationship(self, relationship: RelationshipProperty, value: dict[str, Any]):
         relationship_entity: BaseModel = getattr(self, relationship.key)
         if relationship_entity:
             relationship_entity._merge(parent=self, **value)
         else:
             setattr(self, relationship.key, relationship.mapper.entity(**value))
 
-    def _merge_one_to_many_relationship(self, relationship: RelationshipProperty[Any], values: list[dict[str, Any]]):
+    def _merge_one_to_many_relationship(self, relationship: RelationshipProperty, values: list[dict[str, Any]]):
         relationship_entities: list[BaseModel] = getattr(self, relationship.key)
         pks = relationship.entity.primary_key
 
