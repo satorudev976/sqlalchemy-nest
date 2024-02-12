@@ -22,6 +22,13 @@ class BaseModel(object):
     """
 
     def merge(self, **kwargs: Any) -> None:
+        """
+        Merges the given keyword arguments into the ORM.
+        Args:
+            **kwargs: The keyword arguments to merge into the ORM.
+        Returns:
+            None
+        """
         self._merge(**kwargs)
 
     def _merge(self, parent=None, **kwargs: Any) -> None:
