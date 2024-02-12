@@ -1,6 +1,7 @@
 from typing import Any
 from sqlalchemy.orm import class_mapper
 from sqlalchemy.orm.properties import RelationshipProperty
+from sqlalchemy.orm.mapper import Mapper
 
 
 class BaseModel(object):
@@ -38,18 +39,18 @@ class BaseModel(object):
         self._merge_composites(mapper, **kwargs)
         self._merge_relationships(mapper, parent, **kwargs)
 
-    def _merge_columns(self, mapper, **kwargs: Any) -> None:
+    def _merge_columns(self, mapper: Mapper, **kwargs: Any) -> None:
         for column in mapper.columns:
             if not column.foreign_keys and not column.primary_key:
                 setattr(self, column.key, kwargs.get(column.key))
 
-    def _merge_composites(self, mapper, **kwargs: Any) -> None:
+    def _merge_composites(self, mapper: Mapper, **kwargs: Any) -> None:
         for composite in mapper.composites:
             value = kwargs.get(composite.key)
             if value:
                 setattr(self, composite.key, composite.composite_class(**value))
 
-    def _merge_relationships(self, mapper, parent=None, **kwargs: Any) -> None:
+    def _merge_relationships(self, mapper: Mapper, parent=None, **kwargs: Any) -> None:
         for relationship in mapper.relationships:
             if parent and type(parent) == relationship.mapper.entity:
                 continue
