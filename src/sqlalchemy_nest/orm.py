@@ -25,16 +25,25 @@ class BaseModel(object):
         self._merge(**kwargs)
 
     def _merge(self, parent=None, **kwargs: Any) -> None:
-        for column in class_mapper(type(self)).columns:
+        mapper = class_mapper(type(self))
+
+        self._merge_columns(mapper, **kwargs)
+        self._merge_composites(mapper, **kwargs)
+        self._merge_relationships(mapper, parent, **kwargs)
+
+    def _merge_columns(self, mapper, **kwargs: Any) -> None:
+        for column in mapper.columns:
             if not column.foreign_keys and not column.primary_key:
                 setattr(self, column.key, kwargs.get(column.key))
 
-        for composite in class_mapper(type(self)).composites:
+    def _merge_composites(self, mapper, **kwargs: Any) -> None:
+        for composite in mapper.composites:
             value = kwargs.get(composite.key)
             if value:
                 setattr(self, composite.key, composite.composite_class(**value))
 
-        for relationship in class_mapper(type(self)).relationships:
+    def _merge_relationships(self, mapper, parent=None, **kwargs: Any) -> None:
+        for relationship in mapper.relationships:
             if parent and type(parent) == relationship.mapper.entity:
                 continue
 
