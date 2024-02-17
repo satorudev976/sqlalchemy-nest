@@ -9,6 +9,12 @@ pip install --upgrade pip
 pip install poetry
 ```
 
+### Setup virtualenvs
+
+```
+poetry config --local virtualenvs.in-project true
+```
+
 ### Install dependencies
 
 ```
