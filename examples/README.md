@@ -89,6 +89,13 @@ def create_user(db: Session, user: schemas.UserCreate):
 If you run it with Uvicorn:
 
 ```
+cd examples
+python --version # Make sure python 3.9 or higher
+
+
+python -m venv .venv
+source .venv/bin/activate
+
 pip install --no-cache-dir --upgrade -r requirements.txt
 
 uvicorn sql_app.main:app --reload

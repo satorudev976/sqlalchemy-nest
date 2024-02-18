@@ -2,4 +2,4 @@ fastapi
 uvicorn
 pydantic
 sqlalchemy
-sqlalchemy-nest==1.2.0
+sqlalchemy-nest
