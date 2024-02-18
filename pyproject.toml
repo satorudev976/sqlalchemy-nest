@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "sqlalchemy-nest"
-version = "1.2.1"
+version = "1.2.2"
 description = "easy create nested models for sqlalchemy"
 authors = ["satoru"]
 license = "MIT"
@@ -17,6 +17,7 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
     "Topic :: Software Development :: Libraries :: Python Modules"
 ]
+keywords = ["sqlalchemy", "nest", "sqlalchemy-nest"]
 packages = [{include = "sqlalchemy_nest", from = "src"}]
 repository = "https://github.com/satorudev976/sqlalchemy-nest.git"
 
