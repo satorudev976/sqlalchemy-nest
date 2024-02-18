@@ -17,6 +17,7 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
     "Topic :: Software Development :: Libraries :: Python Modules"
 ]
+keywords = ["sqlalchemy", "nest", "sqlalchemy-nest"]
 packages = [{include = "sqlalchemy_nest", from = "src"}]
 repository = "https://github.com/satorudev976/sqlalchemy-nest.git"
 
