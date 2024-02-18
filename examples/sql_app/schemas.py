@@ -32,11 +32,45 @@ class UserCreate(UserBase):
     # Add items (create items by sqlalchemy-nest)
     items: list[ItemCreate] = []
 
+    model_config = {
+        "json_schema_extra": {
+            "examples": [
+                {
+                    "email": "test@example.com",
+                    "password": "password",
+                    "items": [
+                        {
+                            "title": "title",
+                            "description": "description"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+
 
 class UserUpdate(UserBase):
     is_active: bool = True
     # Add items (update items by sqlalchemy-nest)
     items: list[ItemUpdate] = []
+
+    model_config = {
+        "json_schema_extra": {
+            "examples": [
+                {
+                    "email": "test@example.com",
+                    "is_active": True,
+                    "items": [
+                        {
+                            "title": "title",
+                            "description": "description"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
 
 
 class User(UserBase):
