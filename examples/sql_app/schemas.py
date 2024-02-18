@@ -12,7 +12,7 @@ class ItemCreate(ItemBase):
 
 
 class ItemUpdate(ItemBase):
-    pass
+    id: int
 
 
 class Item(ItemBase):
@@ -63,8 +63,9 @@ class UserUpdate(UserBase):
                     "is_active": True,
                     "items": [
                         {
-                            "title": "title",
-                            "description": "description"
+                            "id": 1,
+                            "title": "update_title",
+                            "description": "update_description"
                         }
                     ]
                 }

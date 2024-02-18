@@ -47,6 +47,10 @@ class UserCreate(UserBase):
 +  class UserUpdate(UserBase):
 +      is_active: bool = True
 +      items: list[ItemUpdate] = []
+
++  class ItemUpdate(ItemBase):
++      id: int
+
 ```
 
 
