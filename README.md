@@ -198,8 +198,8 @@ pip install sqlalchemy-nest
 
 ### Development
 
-Please refer to the [CONTRIBUTING](CONTRIBUTING.md)
+Please refer to the [CONTRIBUTING](https://github.com/satorudev976/sqlalchemy-nest/blob/main/CONTRIBUTING.md)
 
 ### Example
 
-[Sample Code](./examples/README.md) using FastAPI and SQLAlchemy
+[Sample Code](https://github.com/satorudev976/sqlalchemy-nest/tree/main/examples) using FastAPI and SQLAlchemy
