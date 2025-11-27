@@ -1,11 +1,50 @@
 import pytest
 from datetime import date
 
-from tests.models import Reservation, Root
+from tests.models import Reservation, Root, Parent
+
+class TestInitColumns:
+
+    def test_columns(self, session):
+        with session() as session:
+            parent = {
+                'bool_val': False,
+                'int_val': 0,
+                'childs': [
+                    {
+                        'bool_val': True,
+                        'int_val': 999,
+                    },
+                    {
+                        'bool_val': False,
+                        'int_val': 0,
+                    },
+                    {
+                        'bool_val': None,
+                        'int_val': None,
+                    },
+                    ]
+            }
+            session.add(Parent(**parent))
+            session.commit()
+            parent: Parent = session.query(Parent).filter(Parent.id == 1).first()
+
+            assert parent.id == 1
+            assert parent.bool_val == False
+            assert parent.int_val == 0
+            assert parent.childs[0].bool_val == True
+            assert parent.childs[0].int_val == 999
+            assert parent.childs[1].bool_val == False
+            assert parent.childs[1].int_val == 0
+            assert parent.childs[2].bool_val == None
+            assert parent.childs[2].int_val == None
+
+            session.delete(parent)
+            session.commit()
 
 
 class TestUpdateColumns:
-    
+
     @pytest.fixture(autouse=True, scope="function")
     def setup(self, session):
         self.db_session = session
@@ -16,15 +55,15 @@ class TestUpdateColumns:
             }
             session.add(Reservation(**reservation))
             session.commit()
-        
+
         yield
-        
+
         #remove test data
         with self.db_session() as session:
             reservation: Reservation = session.query(Reservation).filter(Reservation.id == 1).first()
             session.delete(reservation)
             session.commit()
-    
+
     @pytest.mark.parametrize(
         "update_reservation",
         [
@@ -56,11 +95,11 @@ class TestUpdateColumns:
             reservation.merge(**update_reservation)
             session.commit()
             updated_reservation: Reservation = session.query(Reservation).filter(Reservation.id == 1).first()
-            
+
             assert updated_reservation.id == 1
             assert updated_reservation.start_date == date(2024, 2, 1)
             assert updated_reservation.end_date == date(2024, 2, 2)
-    
+
     @pytest.mark.parametrize(
         "update_reservation",
         [
@@ -84,11 +123,11 @@ class TestUpdateColumns:
             reservation.merge(**update_reservation)
             session.commit()
             updated_reservation: Reservation = session.query(Reservation).filter(Reservation.id == 1).first()
-            
+
             assert updated_reservation.id == 1
             assert updated_reservation.start_date == None
             assert updated_reservation.end_date == None
-        
+
     def test_add_one_to_one(self, session):
         update_reservation = {
             'id': 1,
@@ -103,7 +142,7 @@ class TestUpdateColumns:
             reservation.merge(**update_reservation)
             session.commit()
             updated_reservation: Reservation = session.query(Reservation).filter(Reservation.id == 1).first()
-            
+
             assert updated_reservation.id == 1
             assert updated_reservation.start_date == date(2024, 2, 1)
             assert updated_reservation.end_date == date(2024, 2, 2)
@@ -125,15 +164,15 @@ class TestOneToOne:
             }
             session.add(Reservation(**reservation))
             session.commit()
-        
+
         yield
-        
+
         #remove test data
         with self.db_session() as session:
             reservation: Reservation = session.query(Reservation).filter(Reservation.id == 1).first()
             session.delete(reservation)
             session.commit()
-    
+
 
     def test_update_one_to_one(self, session):
         update_reservation = {
@@ -149,12 +188,12 @@ class TestOneToOne:
             reservation.merge(**update_reservation)
             session.commit()
             updated_reservation: Reservation = session.query(Reservation).filter(Reservation.id == 1).first()
-            
+
             assert updated_reservation.id == 1
             assert updated_reservation.start_date == date(2024, 2, 1)
             assert updated_reservation.end_date == date(2024, 2, 2)
             assert updated_reservation.registration_card.guest_name == 'Jon Smith'
-    
+
     def test_remove_one_to_one(self, session):
         update_reservation = {
             'id': 1,
@@ -166,7 +205,7 @@ class TestOneToOne:
             reservation.merge(**update_reservation)
             session.commit()
             updated_reservation: Reservation = session.query(Reservation).filter(Reservation.id == 1).first()
-            
+
             assert updated_reservation.id == 1
             assert updated_reservation.start_date == date(2024, 2, 1)
             assert updated_reservation.end_date == date(2024, 2, 2)
@@ -197,20 +236,20 @@ class TestOneToMany:
                             }
                         ]
                     },
-                ] 
+                ]
             }
-            
+
             session.add(Root(**root))
             session.commit()
-        
+
         yield
-        
+
         #remove test data
         with self.db_session() as session:
             root: Root = session.query(Root).filter(Root.id == 1).first()
             session.delete(root)
             session.commit()
-    
+
     def test_update_one_to_many(self, session):
         updat_root = {
             'id': 1,
@@ -236,16 +275,16 @@ class TestOneToMany:
                         }
                     ]
                 },
-            ] 
+            ]
         }
-        
+
         with session() as session:
             root: Root = session.query(Root).filter(Root.id == 1).first()
             root.merge(**updat_root)
             session.commit()
             updated_root: Root = session.query(Root).filter(Root.id == 1).first()
-            
-            
+
+
             assert updated_root.id == 1
             assert updated_root.name == 'updated_root'
             assert len(updated_root.branches) == 1
@@ -286,16 +325,16 @@ class TestOneToMany:
                         }
                     ]
                 },
-            ] 
+            ]
         }
-        
+
         with session() as session:
             root: Root = session.query(Root).filter(Root.id == 1).first()
             root.merge(**updat_root)
             session.commit()
             updated_root: Root = session.query(Root).filter(Root.id == 1).first()
-            
-            
+
+
             assert updated_root.id == 1
             assert updated_root.name == 'root'
             assert len(updated_root.branches) == 1
@@ -347,16 +386,16 @@ class TestOneToMany:
                         }
                     ]
                 },
-            ] 
+            ]
         }
-        
+
         with session() as session:
             root: Root = session.query(Root).filter(Root.id == 1).first()
             root.merge(**updat_root)
             session.commit()
             updated_root: Root = session.query(Root).filter(Root.id == 1).first()
-            
-            
+
+
             assert updated_root.id == 1
             assert updated_root.name == 'root'
             assert len(updated_root.branches) == 2
@@ -393,16 +432,16 @@ class TestOneToMany:
                         }
                     ]
                 },
-            ] 
+            ]
         }
-        
+
         with session() as session:
             root: Root = session.query(Root).filter(Root.id == 1).first()
             root.merge(**updat_root)
             session.commit()
             updated_root: Root = session.query(Root).filter(Root.id == 1).first()
-            
-            
+
+
             assert updated_root.id == 1
             assert updated_root.name == 'root'
             assert len(updated_root.branches) == 1
@@ -423,16 +462,16 @@ class TestOneToMany:
                     'id': 1,
                     'name': 'branch',
                 },
-            ] 
+            ]
         }
-        
+
         with session() as session:
             root: Root = session.query(Root).filter(Root.id == 1).first()
             root.merge(**updat_root)
             session.commit()
             updated_root: Root = session.query(Root).filter(Root.id == 1).first()
-            
-            
+
+
             assert updated_root.id == 1
             assert updated_root.name == 'root'
             assert len(updated_root.branches) == 1
@@ -451,12 +490,12 @@ class TestCreateOneToMany:
             root = {
                 'name': 'root',
             }
-            
+
             session.add(Root(**root))
             session.commit()
-        
+
         yield
-        
+
         #remove test data
         with self.db_session() as session:
             root: Root = session.query(Root).filter(Root.id == 1).first()
@@ -485,16 +524,16 @@ class TestCreateOneToMany:
                         }
                     ]
                 },
-            ] 
+            ]
         }
-        
+
         with session() as session:
             root: Root = session.query(Root).filter(Root.id == 1).first()
             root.merge(**updat_root)
             session.commit()
             updated_root: Root = session.query(Root).filter(Root.id == 1).first()
-            
-            
+
+
             assert updated_root.id == 1
             assert updated_root.name == 'root'
             assert len(updated_root.branches) == 1

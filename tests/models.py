@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Date, ForeignKey, Integer, String
+from sqlalchemy import Column, Date, ForeignKey, Integer, String, Boolean
 from sqlalchemy.orm import composite, declarative_base, relationship
 from sqlalchemy_nest import declarative_nested_model_constructor
 from sqlalchemy_nest.orm import BaseModel
@@ -84,3 +84,23 @@ class RegistrationCard(Base):
     reservation_id = Column(Integer, ForeignKey("reservation.id"), unique=True)
 
     reservation = relationship("Reservation")
+
+class Parent(Base):
+    __tablename__ = "parent"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    bool_val = Column(Boolean)
+    int_val = Column(Integer)
+
+    childs = relationship("Child", back_populates="parent", uselist=True, lazy="joined", cascade="all, delete-orphan", order_by="Child.id")
+
+
+class Child(Base):
+    __tablename__ = "child"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    bool_val = Column(Boolean)
+    int_val = Column(Integer)
+    parent_id = Column(Integer, ForeignKey("parent.id"))
+
+    parent = relationship("Parent")
