@@ -28,7 +28,9 @@ def declarative_nested_model_constructor(self: Any, **kwargs: Any) -> None:
         elif isinstance(value, dict):  # "one-to-one"
             if key in relationships:
                 setattr(self, key, relationships[key].mapper.entity(**value))
-            if key in composites:
+            elif key in composites:
                 setattr(self, key, composites[key].composite_class(**value))
+            else:
+                setattr(self, key, value)
         else:
             setattr(self, key, value)

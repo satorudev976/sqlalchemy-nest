@@ -10,6 +10,7 @@ class TestInitColumns:
             parent = {
                 'bool_val': False,
                 'int_val': 0,
+                'json_val': {"name": "Tom"},
                 'childs': [
                     {
                         'bool_val': True,
@@ -23,7 +24,7 @@ class TestInitColumns:
                         'bool_val': None,
                         'int_val': None,
                     },
-                    ]
+                ]
             }
             session.add(Parent(**parent))
             session.commit()
@@ -32,6 +33,7 @@ class TestInitColumns:
             assert parent.id == 1
             assert parent.bool_val == False
             assert parent.int_val == 0
+            assert parent.json_val == {"name": "Tom"}
             assert parent.childs[0].bool_val == True
             assert parent.childs[0].int_val == 999
             assert parent.childs[1].bool_val == False

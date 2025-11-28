@@ -2,6 +2,8 @@ from sqlalchemy import Column, Date, ForeignKey, Integer, String, Boolean
 from sqlalchemy.orm import composite, declarative_base, relationship
 from sqlalchemy_nest import declarative_nested_model_constructor
 from sqlalchemy_nest.orm import BaseModel
+from sqlalchemy.ext.mutable import MutableDict
+from sqlalchemy.dialects.mysql import JSON
 
 Base = declarative_base(cls=BaseModel, constructor=declarative_nested_model_constructor)
 
@@ -91,6 +93,7 @@ class Parent(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     bool_val = Column(Boolean)
     int_val = Column(Integer)
+    json_val = Column(MutableDict.as_mutable(JSON()))
 
     childs = relationship("Child", back_populates="parent", uselist=True, lazy="joined", cascade="all, delete-orphan", order_by="Child.id")
 
