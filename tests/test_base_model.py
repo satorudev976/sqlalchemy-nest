@@ -44,6 +44,77 @@ class TestInitColumns:
             session.delete(parent)
             session.commit()
 
+class TestUpdateJsonColumn:
+
+    @pytest.fixture(autouse=True, scope="function")
+    def setup(self, session):
+        self.db_session = session
+        with self.db_session() as session:
+            parent = {
+                'bool_val': False,
+                'int_val': 0,
+                'json_val': {"name": "John"}
+            }
+            session.add(Parent(**parent))
+            session.commit()
+
+        yield
+
+        #remove test data
+        with self.db_session() as session:
+            parent: Parent = session.query(Parent).filter(Parent.id == 1).first()
+            session.delete(parent)
+            session.commit()
+
+
+    @pytest.mark.parametrize(
+        "update_parent",
+        [
+            pytest.param({
+                'id': 1,
+                'bool_val': False,
+                'int_val': 0,
+                'json_val': {"name": "Michael"}
+
+            }),
+        ]
+    )
+    def test_update_json_columns(self, update_parent, session):
+        with session() as session:
+            parent: Parent = session.query(Parent).filter(Parent.id == 1).first()
+            parent.merge(**update_parent)
+            session.commit()
+            updated_parent: Parent = session.query(Parent).filter(Parent.id == 1).first()
+
+            assert updated_parent.id == 1
+            assert updated_parent.bool_val == False
+            assert updated_parent.int_val == 0
+            assert updated_parent.json_val == {"name": "Michael"}
+
+
+    @pytest.mark.parametrize(
+        "update_parent",
+        [
+            pytest.param({
+                'id': 1,
+                'bool_val': None,
+                'int_val': None,
+                'json_val': None
+            }),
+        ]
+    )
+    def test_update_columns_by_null(self, update_parent, session):
+        with session() as session:
+            parent: Parent = session.query(Parent).filter(Parent.id == 1).first()
+            parent.merge(**update_parent)
+            session.commit()
+            updated_parent: Parent = session.query(Parent).filter(Parent.id == 1).first()
+
+            assert updated_parent.id == 1
+            assert updated_parent.bool_val == None
+            assert updated_parent.int_val == None
+            assert updated_parent.json_val == None
+
 
 class TestUpdateColumns:
 
